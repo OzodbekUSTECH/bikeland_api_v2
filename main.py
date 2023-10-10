@@ -8,7 +8,7 @@ from config import settings
 from fastapi_pagination import add_pagination
 from fastapi_pagination.utils import disable_installed_extensions_check
 
-app = FastAPI(title="Market place by Minzifa Travel")
+app = FastAPI(title="BIKELAND API")
 add_pagination(app)
 
 app.mount(f"/{settings.media_filename}", StaticFiles(directory=f"{settings.media_filename}"), name=f"{settings.media_filename}")
