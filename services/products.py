@@ -26,6 +26,7 @@ class ProductsService:
                         product_dict = await ParserHandler.create_product_dict(
                             product
                         )
+                        product_dict["status_id"] = settings.NOT_FILLED_IN_STATUS_ID
                         data_list.append(product_dict)
 
                 await uow.products.bulk_create(data_list)

@@ -29,6 +29,7 @@ class Settings(BaseSettings):
 
     PUBLISHED_STATUS_ID: int
     ARCHIVED_STATUS_ID: int
+    NOT_FILLED_IN_STATUS_ID: int
 
     @property
     def DATABASE_URL(self): 
