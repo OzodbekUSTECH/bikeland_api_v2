@@ -1,0 +1,64 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15.3
+    container_name: bikeland_db  # Новое имя контейнера
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 77girado
+      TZ: "Asia/Tashkent"
+    ports:
+      - "5432:5432"  # Используйте другой порт
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Укажите новый каталог данных
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8009:8000
+    depends_on:
+      - db
+    volumes:
+      - blogs-media-volume:/code/media/blogs/
+      - contacts-media-volume:/code/media/contacts/
+      - dealers-media-volume:/code/media/dealers/
+      - delivery-media-volume:/code/media/delivery/
+      - logos-media-volume:/code/media/logos/
+      - payment_methods-media-volume:/code/media/payment_methods/
+      - products-media-volume:/code/media/products/
+      - social_media-media-volume:/code/media/social_media/
+      - users-media-volume:/code/media/users/
+      
+  # redis:
+  #   image: redis:latest
+  #   container_name: bikeland_redis
+  #   restart: always
+  #   ports:
+  #     - "6379:6379"
+  # bot:
+  #   build:
+  #     context: .
+  #   command: python bot.py
+  # second-bot:
+  #   build:
+  #     context: ./  # Устанавливаем контекст текущего каталога
+  #   command: python second_bot.py
+  #   depends_on:
+  #     - web 
+  #   volumes:
+  #     - products-media-volume:/code/media/products/  # Исп
+
+volumes:
+  pgdata:  # Новый том для данных PostgreSQL 15.3
+  blogs-media-volume:
+  contacts-media-volume:
+  dealers-media-volume:
+  delivery-media-volume:
+  logos-media-volume:
+  payment_methods-media-volume:
+  products-media-volume:
+  social_media-media-volume:
+  users-media-volume:
