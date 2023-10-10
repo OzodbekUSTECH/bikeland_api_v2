@@ -27,8 +27,6 @@ class Settings(BaseSettings):
     MAIL_FROM_NAME: str
 
 
-    RESET_LINK: str
-
     PUBLISHED_STATUS_ID: int
     ARCHIVED_STATUS_ID: int
 
@@ -87,7 +85,7 @@ class Settings(BaseSettings):
         return f"{settings.MEDIA_URL}{self.delivery_media_dir}"
 
     api_v1_prefix: str = "/v1"
-    development: bool = False
+    development: bool = True
     db: DbSettings = DbSettings()
     
     
