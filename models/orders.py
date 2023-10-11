@@ -29,7 +29,9 @@ class Order(BaseTable):
     def brand_name(self) -> str | None:
         return self.product.brand.name if self.product.brand else None
     
-    # telegram_client_id: Mapped[int]
-
     product: Mapped["Product"] = relationship(lazy="subquery")
+
+    tgclient_id: Mapped[int] = mapped_column(ForeignKey("tgclients.id"))
+
+    
     

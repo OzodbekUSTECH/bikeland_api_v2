@@ -23,4 +23,6 @@ from models.products import Product, ProductMediaGroup
 
 from models.orders import Order
 
+from models.tg_clients import TgClient
+
 

@@ -2,7 +2,7 @@ from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import insert, select, update, delete
 from fastapi_pagination.ext.async_sqlalchemy import paginate
-from sqlalchemy import desc
+from sqlalchemy import desc, func
 from utils.exceptions import CustomException
 from typing import Type
 
@@ -69,10 +69,17 @@ class BaseRepository:
         result = await self.session.execute(stmt)
         return result.scalar_one()
     
+    async def get_all_by(self, **filters) -> list:
+        stmt = select(self.model).filter_by(**filters)
+        result = await self.session.execute(stmt)
+        return result.scalars().all()
+    
+
     async def get_one_by(self, **filters) -> dict:
         stmt = select(self.model).filter_by(**filters)
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
+    
     
     async def get_all_without_pagination(self, reverse: bool = False):
         stmt = select(self.model)
@@ -83,3 +90,8 @@ class BaseRepository:
 
         result = await self.session.execute(stmt)
         return result.scalars().all()
+    
+    async def get_one_by_phone_number(self, phone_number: str):
+        stmt = select(self.model).where(func.replace(self.model.phone_number, "+", "") == phone_number.replace("+", ""))
+        result  = await self.session.execute(stmt)
+        return result.scalar_one_or_none()

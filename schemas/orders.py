@@ -1,5 +1,4 @@
-from schemas import CreateBaseModel, UpdateBaseModel, IdResponseSchema
-from pydantic import BaseModel
+from schemas import CreateBaseModel,  IdResponseSchema
 
 
 class CreateOrderSchema(CreateBaseModel):

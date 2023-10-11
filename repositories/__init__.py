@@ -22,3 +22,5 @@ from repositories.forms import BackCallWidgetsRepository, BackCallFormsRepositor
 from repositories.products import ProductsRepository, ProductMediaGroupsRepository
 
 from repositories.orders import OrdersRepository
+
+from repositories.tgclients import TgClientsRepository
