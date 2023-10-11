@@ -5,14 +5,14 @@ services:
     container_name: bikeland_pg  # Новое имя контейнера
     restart: always
     environment:
-      POSTGRES_DB: bikeland_db
+      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 77girado
       TZ: "Asia/Tashkent"
     ports:
       - "5433:5432"  # Используйте другой порт
     volumes:
-      - pgdata_bike:/var/lib/postgresql/data  # Укажите новый каталог данных
+      - pgdata_bike:/var/lib/postgresql/project_data  # Укажите новый каталог данных
   api:
     build:
       context: .
