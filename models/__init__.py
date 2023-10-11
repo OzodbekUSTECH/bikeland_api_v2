@@ -25,4 +25,6 @@ from models.orders import Order
 
 from models.tg_clients import TgClient
 
+from models.statistics import StatisticOfViews, StatisticOfOrders
+
 

@@ -21,3 +21,5 @@ from services.products import products_service
 from services.parser_own import parser_service
 
 from services.orders import orders_service
+
+from services.statistics import statistics_service

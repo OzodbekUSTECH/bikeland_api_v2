@@ -36,6 +36,9 @@ class UnitOfWork:
     orders: Type[repositories.OrdersRepository]
 
     tgclients: Type[repositories.TgClientsRepository]
+
+    statistics_of_views: Type[repositories.StatisticsOfViewsRepository]
+    statistics_of_orders: Type[repositories.StatisticsOfOrdersRepository]
   
     def __init__(self):
         self.session_factory = session_maker
@@ -70,6 +73,9 @@ class UnitOfWork:
         self.orders = repositories.OrdersRepository(self.session, model=models.Order)
 
         self.tgclients = repositories.TgClientsRepository(self.session, model=models.TgClient)
+
+        self.statistics_of_views = repositories.StatisticsOfViewsRepository(self.session, model=models.StatisticOfViews)
+        self.statistics_of_orders = repositories.StatisticsOfOrdersRepository(self.session, model=models.StatisticOfOrders)
 
       
     async def __aexit__(self, *args):

@@ -22,6 +22,8 @@ from api.routers.parser import router as router_parser
 
 from api.routers.orders import router as orders_router
 
+from api.routers.statistics import router as statistics_router 
+
 all_routers = [
     # router_parser,
     auth_router,
@@ -44,5 +46,7 @@ all_routers = [
     delivery_router,
 
     forms_router,
-    orders_router
+    orders_router, 
+
+    statistics_router
 ]

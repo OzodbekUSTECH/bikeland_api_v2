@@ -24,3 +24,5 @@ from repositories.products import ProductsRepository, ProductMediaGroupsReposito
 from repositories.orders import OrdersRepository
 
 from repositories.tgclients import TgClientsRepository
+
+from repositories.statistics import StatisticsOfOrdersRepository, StatisticsOfViewsRepository
