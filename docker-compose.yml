@@ -2,7 +2,7 @@ version: '3.8'
 services:
   db:
     image: postgres:15.3
-    container_name: market_place_db_new  # Новое имя контейнера
+    container_name: market_place_db_new2 # Новое имя контейнера
     restart: always
     environment:
       POSTGRES_DB: postgres
