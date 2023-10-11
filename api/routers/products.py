@@ -18,9 +18,6 @@ router = APIRouter(
 async def parse_1C_products() -> None:
     await products_service.create_products()
 
-@router.post('/own')
-async def parse_own_products() -> None:
-    await products_service.parse_own_products()
 
 @router.post('/media')
 async def create_media_group_for_product(

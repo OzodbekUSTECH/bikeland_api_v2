@@ -7,6 +7,7 @@ from api.routers.brands import router as brands_router
 from api.routers.categories import router as categories_router
 from api.routers.sub_categories import router as sub_categories_router
 from api.routers.statuses import router as statuses_router
+from api.routers.products import router as products_router
 
 from api.routers.resource_catalog.contacts import router as contacts_router
 from api.routers.resource_catalog.logos import router as logos_router
@@ -30,6 +31,8 @@ all_routers = [
     categories_router,
     sub_categories_router,
     statuses_router,
+
+    products_router,
 
     #resource catalog
     contacts_router,
