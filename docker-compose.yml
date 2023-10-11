@@ -28,7 +28,7 @@ services:
       - delivery-media-volume:/project/media/delivery/
       - logos-media-volume:/project/media/logos/
       - payment_methods-media-volume:/project/media/payment_methods/
-      - products-media-volume:/project/media/products/
+      # - products-media-volume:/project/media/products/
       - social_media-media-volume:/project/media/social_media/
       - users-media-volume:/project/media/users/
       

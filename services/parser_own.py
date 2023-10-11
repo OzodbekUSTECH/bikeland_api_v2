@@ -19,13 +19,15 @@ class ParserService:
                 product_model = await ParserHandlerSecond.create_product_model(product)
 
                 saved_product: models.Product = await uow.products.create(product_model.model_dump())
-                filenames = await MediaHandler.save_media_from_url(product_model.photos, MediaHandler.products_media_dir)
-                await uow.product_media_groups.bulk_create(
-                    data_list=[CreateProductMediaGroup(
-                        product_id=saved_product.id,
-                        filename=filename
-                    ).model_dump() for filename in filenames]
-                )
+                
+                if product_model.photos:
+                    filenames = await MediaHandler.save_media_from_url(product_model.photos, MediaHandler.products_media_dir)
+                    await uow.product_media_groups.bulk_create(
+                        data_list=[CreateProductMediaGroup(
+                            product_id=saved_product.id,
+                            filename=filename
+                        ).model_dump() for filename in filenames]
+                    )
                             
             await uow.commit()
 
