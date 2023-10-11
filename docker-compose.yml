@@ -12,7 +12,7 @@ services:
     ports:
       - "5433:5432"  # Используйте другой порт
     volumes:
-      - pgdata_bikeland:/var/lib/postgresql/pdbdata  # Укажите новый каталог данных
+      - pgdata_bikeland:/var/lib/postgresql/data  # Укажите новый каталог данных
   web:
     build:
       context: .
