@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  db:
+  pdb:
     image: postgres:15.3
     container_name: market_place_db_new2 # Новое имя контейнера
     restart: always
@@ -12,7 +12,7 @@ services:
     ports:
       - "5433:5432"  # Используйте другой порт
     volumes:
-      - pgdata_new:/var/lib/postgresql/data  # Укажите новый каталог данных
+      - pgdata_new:/var/lib/postgresql/pdbdata  # Укажите новый каталог данных
   web:
     build:
       context: .
@@ -20,7 +20,7 @@ services:
     ports:
       - 8085:8000
     depends_on:
-      - db
+      - pdb
     volumes:
       - blogs-media-volume:/project/media/blogs/
       - contacts-media-volume:/project/media/contacts/
