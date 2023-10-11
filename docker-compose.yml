@@ -18,7 +18,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 8008:8000
+      - 8081:8000
     depends_on:
       - db
     volumes:
