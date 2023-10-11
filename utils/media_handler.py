@@ -71,29 +71,33 @@ class MediaHandler:
 
         for photo_obj in photo_objs:
             url = photo_obj["photo_url"]
-            # Проверьте, что URL действителен
+            
             try:
                 response = requests.get(url)
                 response.raise_for_status()
             except requests.exceptions.RequestException as e:
-                # Обработайте ошибку, если URL недействителен
+                # Обработать ошибку и продолжить цикл
                 print(f"Ошибка при получении медиафайла из URL: {str(e)}")
-                return None
-
+                continue  # Пропустить текущий URL и продолжить с следующим
             
-            # Получите имя файла из URL (последний сегмент URL)
             media_name = os.path.basename(url)
             base_name, extension = os.path.splitext(media_name)
             generated_name = generate_filename(base_name, extension, 1, directory)
 
-            # Сохраните файл
             with open(generated_name, 'wb') as media_file:
                 media_file.write(response.content)
+            
             media_file.close()
             filename = generated_name[len(directory):]
             saved_filenames.append(filename)
 
         return saved_filenames
+
+
+
+
+
+
 
 
 
