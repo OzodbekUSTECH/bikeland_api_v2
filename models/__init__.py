@@ -21,4 +21,6 @@ from models.forms import BackCallWidget, BackCallForm, WorkWithUsForm
 from models.products import Product, ProductMediaGroup
 
 
+from models.orders import Order
+
 

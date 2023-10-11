@@ -20,6 +20,8 @@ from api.routers.forms import router as forms_router
 
 from api.routers.parser import router as router_parser
 
+from api.routers.orders import router as orders_router
+
 all_routers = [
     # router_parser,
     auth_router,
@@ -41,5 +43,6 @@ all_routers = [
     social_media_router,
     delivery_router,
 
-    forms_router
+    forms_router,
+    orders_router
 ]

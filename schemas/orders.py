@@ -1,0 +1,15 @@
+from schemas import CreateBaseModel, UpdateBaseModel, IdResponseSchema
+from pydantic import BaseModel
+
+
+class CreateOrderSchema(CreateBaseModel):
+    name: str
+    phone_number: str
+    region: str
+    known_from: str
+    product_id: int
+
+class OrderSchema(IdResponseSchema, CreateOrderSchema):
+    price: int
+    product_title: str
+    brand_name: str | None

@@ -32,6 +32,8 @@ class UnitOfWork:
 
     products: Type[repositories.ProductsRepository]
     product_media_groups: Type[repositories.ProductMediaGroupsRepository]
+
+    orders: Type[repositories.OrdersRepository]
   
     def __init__(self):
         self.session_factory = session_maker
@@ -62,6 +64,8 @@ class UnitOfWork:
 
         self.products = repositories.ProductsRepository(self.session, model=models.Product)
         self.product_media_groups = repositories.ProductMediaGroupsRepository(self.session, model=models.ProductMediaGroup)
+
+        self.orders = repositories.OrdersRepository(self.session, model=models.Order)
 
       
     async def __aexit__(self, *args):

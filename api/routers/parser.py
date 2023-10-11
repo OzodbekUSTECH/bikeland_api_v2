@@ -1,13 +1,6 @@
-from fastapi import APIRouter, UploadFile, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks
 from services import parser_service
 from repositories import Page
-from schemas.products import (
-    UpdateProductSchema,
-    ProductSchema,
-)
-from schemas import IdResponseSchema
-from repositories import pagination_params
-from utils.filters.filter_products import FilterProductsParams
 
 router = APIRouter(
     prefix="/parser",

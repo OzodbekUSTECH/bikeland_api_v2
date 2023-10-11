@@ -20,3 +20,5 @@ from repositories.resource_catalog.delivery import DeliveryRepository, DeliveryM
 from repositories.forms import BackCallWidgetsRepository, BackCallFormsRepository, WorkWithUsFormsRepository
 
 from repositories.products import ProductsRepository, ProductMediaGroupsRepository
+
+from repositories.orders import OrdersRepository
