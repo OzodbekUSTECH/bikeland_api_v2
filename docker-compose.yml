@@ -5,7 +5,7 @@ services:
     container_name: bikeland_db  # Новое имя контейнера
     restart: always
     environment:
-      POSTGRES_DB: postgres
+      POSTGRES_DB: bikeland_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 77girado
       TZ: "Asia/Tashkent"
