@@ -58,7 +58,7 @@ class FilterProductsParams(BaseFilterParams):
             filters.append(
                 fuzz.partial_ratio(
                     self.title.lower(), product.title.lower()
-                ) >= 60
+                ) >= 75
             )
 
         if self.status_id is not None:
@@ -79,6 +79,7 @@ class FilterProductsParams(BaseFilterParams):
             else:
                 filters.append(product.quantity <= 0)
 
+        return all(filters)
 
     async def sort_products(self, products: list[models.Product]) -> list[models.Product]:
         if self.price_by_asc is not None:

@@ -60,7 +60,7 @@ from schemas.sub_categories import SubCategorySchema
 from schemas.brands import BrandSchema
 from schemas.dealers import DealerSchema
 
-class ProductSchema(IdResponseSchema, CreateProductSchema, UpdateBaseModel):
+class ProductSchema(IdResponseSchema, CreateProductSchema, UpdateProductSchema):
     photos: list[ProductMediaGroup]
     status: StatusSchema
     dealer: DealerSchema | None

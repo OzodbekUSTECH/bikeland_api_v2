@@ -21,7 +21,7 @@ from api.routers.forms import router as forms_router
 from api.routers.parser import router as router_parser
 
 all_routers = [
-    router_parser,
+    # router_parser,
     auth_router,
     users_router,
     dealers_router,

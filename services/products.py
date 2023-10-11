@@ -11,6 +11,28 @@ from repositories import paginate, pagination_params
 
 class ProductsService:
 
+    # async def duplicates(self) -> None:
+    #     async with uow:
+    #         our_products = await uow.products.get_all_without_pagination()
+    #         # filtered_products: list[dict] = await ParserHandler.get_filtered_products()
+    #         # print(len(filtered_products))
+            
+    #         # Создайте множество для хранения уникальных titles
+    #         unique_titles = set()
+            
+    #         # Создайте список для повторяющихся titles
+    #         duplicate_titles = []
+            
+    #         for product in our_products:
+    #             title = product.title
+                
+    #             # Если title уже существует в множестве, это повтор
+    #             if title in unique_titles:
+    #                 duplicate_titles.append(title)
+    #             else:
+    #                 unique_titles.add(title)
+            
+    #         print("Повторяющиеся titles:", duplicate_titles)
 
     async def create_products(self) -> None:
         async with uow:
