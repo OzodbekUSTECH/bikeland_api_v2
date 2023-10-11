@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile
+from fastapi import APIRouter, UploadFile, BackgroundTasks
 from services import parser_service
 from repositories import Page
 from schemas.products import (
@@ -27,5 +27,7 @@ async def parse_own_brands():
     return await parser_service.parse_own_brands()
 
 @router.get('/products')
-async def parse_own_products():
-    return await parser_service.parse_own_products()
+async def parse_own_products(
+    bg: BackgroundTasks
+):
+    bg.add_task(parser_service.parse_own_products)
