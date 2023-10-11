@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  pgdb:
+  bdb:
     image: postgres:15.3
     container_name: bikeland_pg  # Новое имя контейнера
     restart: always
@@ -12,7 +12,7 @@ services:
     ports:
       - "5433:5432"  # Используйте другой порт
     volumes:
-      - pgdata_bike:/var/lib/postgresql/pr_data  # Укажите новый каталог данных
+      - pgdata_bikeland:/var/lib/postgresql/pr_data  # Укажите новый каталог данных
   api:
     build:
       context: .
@@ -20,7 +20,7 @@ services:
     ports:
       - 8009:8000
     depends_on:
-      - pgdb
+      - bdb
     volumes:
       - blogs-media-volume:/project/media/blogs/
       - contacts-media-volume:/project/media/contacts/
@@ -52,7 +52,7 @@ services:
   #     - products-media-volume:/project/media/products/  # Исп
 
 volumes:
-  pgdata_bike:  # Новый том для данных PostgreSQL 15.3
+  pgdata_bikeland:  # Новый том для данных PostgreSQL 15.3
   blogs-media-volume:
   contacts-media-volume:
   dealers-media-volume:
