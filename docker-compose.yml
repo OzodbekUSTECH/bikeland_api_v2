@@ -12,7 +12,7 @@ services:
     ports:
       - "5433:5432"  # Используйте другой порт
     volumes:
-      - pgdata:/var/lib/postgresql/data  # Укажите новый каталог данных
+      - pgdata_bike:/var/lib/postgresql/data  # Укажите новый каталог данных
   web:
     build:
       context: .
@@ -52,7 +52,7 @@ services:
   #     - products-media-volume:/code/media/products/  # Исп
 
 volumes:
-  pgdata:  # Новый том для данных PostgreSQL 15.3
+  pgdata_bike:  # Новый том для данных PostgreSQL 15.3
   blogs-media-volume:
   contacts-media-volume:
   dealers-media-volume:
