@@ -25,8 +25,8 @@ class CreateProductSchema(CreateBaseModel):
     is_deleted: bool
 
 class UpdateProductSchema(UpdateBaseModel):
-    description: str
-    min_quantity: int
+    description: str | None
+    min_quantity: int | None
     video_link: str | None
     tag: str | None
     weight: str | None
@@ -51,9 +51,9 @@ class UpdateProductSchema(UpdateBaseModel):
     show_on_see_also: bool
 
     dealer_id: int | None
-    category_id: int
-    sub_category_id: int
-    brand_id: int
+    category_id: int | None
+    sub_category_id: int | None
+    brand_id: int | None
 
 from schemas.statuses import StatusSchema
 from schemas.sub_categories import SubCategorySchema
