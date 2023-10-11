@@ -30,7 +30,7 @@ async def create_media_group_for_product(
 @router.get('', response_model=Page[ProductSchema] | list[ProductSchema])
 async def get_products(
     filter_params: Annotated[FilterProductsParams, Depends()],
-    pagination: pagination_params
+    pagination: Annotated[pagination_params, Depends()]
 ):
     return await products_service.get_products(filter_params, pagination)
 
