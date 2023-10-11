@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile
+from fastapi import APIRouter, UploadFile, Depends
 from services import products_service
 from repositories import Page
 from schemas.products import (
@@ -8,6 +8,7 @@ from schemas.products import (
 from schemas import IdResponseSchema
 from repositories import pagination_params
 from utils.filters.filter_products import FilterProductsParams
+from typing import Annotated
 
 router = APIRouter(
     prefix="/products",
@@ -28,7 +29,7 @@ async def create_media_group_for_product(
 
 @router.get('', response_model=Page[ProductSchema] | list[ProductSchema])
 async def get_products(
-    filter_params: FilterProductsParams,
+    filter_params: Annotated[FilterProductsParams, Depends()],
     pagination: pagination_params
 ):
     return await products_service.get_products(filter_params, pagination)
