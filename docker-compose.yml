@@ -1,8 +1,8 @@
 version: '3.8'
 services:
-  db:
+  pgdb:
     image: postgres:15.3
-    container_name: bikeland_db  # Новое имя контейнера
+    container_name: bikeland_pg  # Новое имя контейнера
     restart: always
     environment:
       POSTGRES_DB: bikeland_db
@@ -13,24 +13,24 @@ services:
       - "5433:5432"  # Используйте другой порт
     volumes:
       - pgdata_bike:/var/lib/postgresql/data  # Укажите новый каталог данных
-  web:
+  api:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - 8009:8000
     depends_on:
-      - db
+      - pgdb
     volumes:
-      - blogs-media-volume:/code/media/blogs/
-      - contacts-media-volume:/code/media/contacts/
-      - dealers-media-volume:/code/media/dealers/
-      - delivery-media-volume:/code/media/delivery/
-      - logos-media-volume:/code/media/logos/
-      - payment_methods-media-volume:/code/media/payment_methods/
-      - products-media-volume:/code/media/products/
-      - social_media-media-volume:/code/media/social_media/
-      - users-media-volume:/code/media/users/
+      - blogs-media-volume:/project/media/blogs/
+      - contacts-media-volume:/project/media/contacts/
+      - dealers-media-volume:/project/media/dealers/
+      - delivery-media-volume:/project/media/delivery/
+      - logos-media-volume:/project/media/logos/
+      - payment_methods-media-volume:/project/media/payment_methods/
+      - products-media-volume:/project/media/products/
+      - social_media-media-volume:/project/media/social_media/
+      - users-media-volume:/project/media/users/
       
   # redis:
   #   image: redis:latest
@@ -49,7 +49,7 @@ services:
   #   depends_on:
   #     - web 
   #   volumes:
-  #     - products-media-volume:/code/media/products/  # Исп
+  #     - products-media-volume:/project/media/products/  # Исп
 
 volumes:
   pgdata_bike:  # Новый том для данных PostgreSQL 15.3

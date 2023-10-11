@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class DbSettings(BaseModel):
-    alembic_url: str = f"postgresql+asyncpg://postgres:77girado@165.232.118.125:5432/postgres"
+    alembic_url: str = f"postgresql+asyncpg://postgres:77girado@bikeland.uz/bikeland_db"
         
 
 
