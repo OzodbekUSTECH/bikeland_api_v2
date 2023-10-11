@@ -76,7 +76,7 @@ class ProductsService:
         async with uow:
             products: list[models.Product] = await uow.products.get_all_without_pagination()
             filtered_products: list[models.Product] = await filter_params.get_filtered_items(products)
-            filtered_products = await filter_params.sort_products(products)
+            filtered_products = await filter_params.sort_products(filtered_products)
 
             if filter_params.with_pagination:
                 return paginate(filtered_products, pagination)
