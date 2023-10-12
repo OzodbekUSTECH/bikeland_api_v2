@@ -26,5 +26,7 @@ async def parse_own_products(
     bg.add_task(parser_service.parse_own_products)
 
 @router.get('/correct-photos')
-async def corret_the_order_of_photos():
-    return await parser_service.change_the_order_of_photos()
+async def corret_the_order_of_photos(
+    bg: BackgroundTasks
+):
+    bg.add_task(parser_service.change_the_order_of_photos)
