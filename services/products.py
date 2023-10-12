@@ -2,7 +2,6 @@ from schemas.products import UpdateProductSchema, CreateProductMediaGroup
 import models
 from database import uow
 from utils.parser import ParserHandler
-from utils.parser_2 import ParserHandlerSecond
 from utils.media_handler import MediaHandler
 from fastapi import UploadFile
 from config import settings
