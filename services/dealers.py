@@ -12,7 +12,10 @@ class DealersService:
             dealer_dict["filename"] = filename
 
         async with uow:
-            dealer = await uow.dealers.create(dealer_dict)
+            dealer: models.Dealer = await uow.dealers.create(dealer_dict)
+            tgclient: models.TgClient = await uow.tgclients.get_one_by_phone_number(phone_number=dealer.phone_number)
+            if tgclient:
+                dealer.telegram_id = tgclient.telegram_id
             await uow.commit()
             return dealer
         
@@ -32,7 +35,10 @@ class DealersService:
         
         async with uow:
             dealer: models.Dealer = await uow.dealers.get_by_id(id)
-            await uow.dealers.update(dealer.id, dealer_dict)
+            dealer = await uow.dealers.update(dealer.id, dealer_dict)
+            tgclient: models.TgClient = await uow.tgclients.get_one_by_phone_number(phone_number=dealer.phone_number)
+            if tgclient:
+                dealer.telegram_id = tgclient.telegram_id
             await uow.commit()
             return dealer
         

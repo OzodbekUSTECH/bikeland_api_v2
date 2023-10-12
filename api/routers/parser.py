@@ -12,6 +12,13 @@ async def parse_own_categories():
 @router.get('/sub-categories')
 async def parse_own_sub_categories():
     return await parser_service.parse_own_sub_categories()
+
+@router.get('/blogs')
+async def parse_own_blogs(
+    bg: BackgroundTasks
+):
+    bg.add_task(parser_service.parse_own_blogs)
+
 @router.get('/brands')
 async def parse_own_brands():
     """

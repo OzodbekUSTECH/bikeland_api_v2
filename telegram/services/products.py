@@ -122,8 +122,8 @@ class ProductsService:
             ikb_markup: InlineKeyboardMarkup,
     ):
         photo_url = "https://files.glotr.uz/company/000/002/656/logo/14143547079268-4ae5e4c10cea0e50e657c885a657701e.jpg?_=gzauc"
-        # if product.photos:
-        #     photo_url = product.photos[0].photo_url
+        if product.photos:
+            photo_url = product.photos[0].photo_url
             
         # #use 2 spaces to show space in tg
         weight_text = f"• Вес: {product.weight}\n" if product.weight else ""

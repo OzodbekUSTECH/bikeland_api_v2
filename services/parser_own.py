@@ -1,4 +1,5 @@
 from schemas.products import CreateProductMediaGroup
+from schemas.blogs import CreateBlogMediaGroup
 import models
 from database import uow
 from utils.parser_2 import ParserHandlerSecond
@@ -26,6 +27,25 @@ class ParserService:
                             
             await uow.commit()
 
+    async def parse_own_blogs(self):
+        async with uow:
+            blogs = await ParserHandlerSecond.get_all_data_by_url(ParserHandlerSecond.blogs_url)
+            for blog in blogs:
+                blog_model = await ParserHandlerSecond.create_blog_model(blog)
+
+                created_blog: models.Blog = await uow.blogs.create(blog_model.model_dump())
+
+                if blog_model.photos:
+                    filenames = await MediaHandler.save_media_from_url(blog_model.photos, MediaHandler.blogs_media_dir)
+                    await uow.product_media_groups.bulk_create(
+                        data_list=[CreateBlogMediaGroup(
+                            blog_id=created_blog.id,
+                            filename=filename
+                        ).model_dump() for filename in filenames]
+                    )
+
+            await uow.commit()
+            
     async def parse_own_categories(self):
         async with uow:
             categories = await ParserHandlerSecond.get_all_data_by_url(ParserHandlerSecond.categories_url)

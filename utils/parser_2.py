@@ -50,11 +50,19 @@ class CreateSubCategory(CreateBaseModel):
 class CreateBrand(CreateBaseModel):
     name: str
 
+class CreateCategory(CreateBaseModel):
+    title: str
+    meta_description: str | None
+    description: str
+    updated_at: str | None
+    photos: list = Field(exclude=True)    
+
 class ParserHandlerSecond:
     products_url = "https://api.it-test.uz/v1/products?with_pagination=false&page=1&size=50"
     categories_url = "https://api.it-test.uz/v1/categories"
     sub_categories_url = "https://api.it-test.uz/v1/sub/categories"
     brands_url = "https://api.it-test.uz/v1/brands"
+    blogs_url = "https://api.it-test.uz/v1/blogs?with_pagination=false&page=1&size=50"
 
     @staticmethod
     async def get_all_data_by_url(url: str):
@@ -87,4 +95,9 @@ class ParserHandlerSecond:
     @staticmethod
     async def create_brand_model(brand: dict) -> CreateBrand:
         model = CreateBrand.model_validate(brand)
+        return model
+    
+    @staticmethod
+    async def create_blog_model(blog: dict) -> CreateCategory:
+        model = CreateCategory.model_validate(blog)
         return model

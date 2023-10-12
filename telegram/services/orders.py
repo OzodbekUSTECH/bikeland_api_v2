@@ -104,6 +104,7 @@ class OrdersService:
             order_dict["tgclient_id"] = tgclient.id
            
             order:models.Order = await uow.orders.create(order_dict)
+            await uow.commit()
             await self.send_notification_to_admins_tg(order)
              
         unpacked_data = (
