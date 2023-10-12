@@ -37,7 +37,7 @@ class ParserService:
 
                 if blog_model.photos:
                     filenames = await MediaHandler.save_media_from_url(blog_model.photos, MediaHandler.blogs_media_dir)
-                    await uow.product_media_groups.bulk_create(
+                    await uow.blog_media_group.bulk_create(
                         data_list=[CreateBlogMediaGroup(
                             blog_id=created_blog.id,
                             filename=filename
@@ -45,7 +45,7 @@ class ParserService:
                     )
 
             await uow.commit()
-            
+
     async def parse_own_categories(self):
         async with uow:
             categories = await ParserHandlerSecond.get_all_data_by_url(ParserHandlerSecond.categories_url)
