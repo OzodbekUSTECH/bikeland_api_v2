@@ -10,6 +10,9 @@ class DbSettings(BaseModel):
 
 
 class Settings(BaseSettings):
+    ADMIN_TG_IDS: list[int]
+    BOT_TOKEN: str
+
     MEDIA_URL: str
     DB_HOST: str
     DB_PORT:str
@@ -30,6 +33,7 @@ class Settings(BaseSettings):
     PUBLISHED_STATUS_ID: int
     ARCHIVED_STATUS_ID: int
     NOT_FILLED_IN_STATUS_ID: int
+
 
     @property
     def DATABASE_URL(self): 

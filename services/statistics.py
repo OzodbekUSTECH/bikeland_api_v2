@@ -85,9 +85,9 @@ class StatisticsService:
             percent_30_days = (thirty_days_ago_count / max(1, thirty_days_ago_count)) * 100
 
             return {
-                "1_day_percent": round(min(percent_1_day, 100), 2),
-                "7_days_percent": round(min(percent_7_days, 100), 2),
-                "30_days_percent": round(min(percent_30_days, 100), 2),
+                "1daypercent": round(min(percent_1_day, 100), 2),
+                "7dayspercent": round(min(percent_7_days, 100), 2),
+                "30dayspercent": round(min(percent_30_days, 100), 2),
             }
 
 

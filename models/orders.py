@@ -16,6 +16,7 @@ class Order(BaseTable):
     known_from: Mapped[str | None]
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
     quantity: Mapped[int] = mapped_column(default=1, server_default="1")
+    source: Mapped[str] = mapped_column(default="Bikeland.uz", server_default="Bikeland.uz")
 
     @hybrid_property
     def price(self) -> int:
@@ -29,7 +30,7 @@ class Order(BaseTable):
     def brand_name(self) -> str | None:
         return self.product.brand.name if self.product.brand else None
     
-    product: Mapped["Product"] = relationship(lazy="subquery")
+    product: Mapped["Product"] = relationship(lazy="immediate")
 
     tgclient_id: Mapped[int] = mapped_column(ForeignKey("tgclients.id"))
 

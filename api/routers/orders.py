@@ -23,6 +23,9 @@ async def create_order(
 async def get_orders():
     return await orders_service.get_orders()
 
+
+
 @router.delete('/{id}', response_model=IdResponseSchema)
 async def delete_order(id: int):
     return await orders_service.delete_order(id)
+

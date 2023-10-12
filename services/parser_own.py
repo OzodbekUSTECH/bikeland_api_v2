@@ -1,13 +1,8 @@
-from schemas.products import UpdateProductSchema, CreateProductMediaGroup
+from schemas.products import CreateProductMediaGroup
 import models
 from database import uow
-from utils.parser import ParserHandler
 from utils.parser_2 import ParserHandlerSecond
 from utils.media_handler import MediaHandler
-from fastapi import UploadFile
-from config import settings
-from utils.filters.filter_products import FilterProductsParams
-from repositories import paginate, pagination_params
 
 class ParserService:
 
@@ -58,6 +53,18 @@ class ParserService:
                 await uow.brands.create(brand_model.model_dump())
 
             await uow.commit()
+
+
+    async def change_the_order_of_photos(self):
+        async with uow:
+            main_products: list[models.Product] = await uow.products.get_all_without_pagination()
+            add_products: list[models.Product] = await uow.products.get_all_without_pagination()
+            for main_product, add_product in zip(main_products, add_products):
+                for main_photo, add_photo in zip(main_product.photos, add_product.photos[::-1]):
+                    main_photo.filename = add_photo.filename
+
+            await uow.commit()
+
 
 
 parser_service = ParserService()

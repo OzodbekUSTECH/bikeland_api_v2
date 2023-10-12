@@ -13,3 +13,4 @@ class Category(BaseTable):
     name: Mapped[str]
 
     sub_categories: Mapped[list["SubCategory"]] = relationship(cascade="all, delete-orphan", lazy="subquery")
+    
