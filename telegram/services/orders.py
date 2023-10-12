@@ -126,12 +126,12 @@ class OrdersService:
                 f"Заказ из телеграм бота\n\n"
                 f"Дата время заказа: {order.created_at}\n"
                 f"ID/Номер заказа: {order.id}\n"
+                f"Имя: {order.name}\n"
+                f"Номер телефона: {order.phone_number}\n"
                 f"Название товара: {order.product.title}\n"
                 f"Количество: {order.quantity}\n"
                 f"Цена:  {order.price:,}".replace(',', ' ') + " сум\n"
                 f"Регион {order.region}\n"
-                f"Номер телефона: {order.phone_number}\n"
-                f"Имя: {order.name}\n"
                 # f"Узнал от: {order.known_from}\n"
             )
         product: models.Product = await uow.products.get_by_id(order.product_id)

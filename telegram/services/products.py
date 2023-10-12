@@ -21,7 +21,6 @@ class ProductsService:
         self.message_exceptions = ["Назад", "Корзина", "/start", "Отменить", "Сделать рассылку"]
 
     async def _notify_admins_tg(self, message: Message):
-        async with uow:
             telegram_client: models.TgClient = await uow.tgclients.get_one_by(telegram_id=message.from_user.id)
             timestamp = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
             message_text = (
@@ -35,8 +34,7 @@ class ProductsService:
                 await bot.send_message(chat_id=admin_tg_id, text=message_text)
 
     async def get_products(self, message: Message) -> None:
-        async with uow:
-           
+        async with uow: 
             if not self.cache_categories or not self.cache_sub_categories:
                 self.cache_categories = [category.name for category in await uow.categories.get_all_without_pagination()]
                 self.cache_sub_categories = [sub_category.name for sub_category in await uow.sub_categories.get_all_without_pagination()]
@@ -54,13 +52,17 @@ class ProductsService:
                     category_id=category.id,
                 )
 
-            if message.text in self.cache_sub_categories:
+            elif message.text in self.cache_sub_categories:
                 sub_category: models.SubCategory = await uow.sub_categories.get_one_by(name=message.text)
                 
-                return await self.paginate_products(
+                await self.paginate_products(
                     message=message,
                     sub_category_id=sub_category.id
                 )
+
+       
+
+            
            
     async def paginate_products(
             self,
@@ -71,7 +73,7 @@ class ProductsService:
             current_page: int = 1,
             sort_by: str = SorterBtnNames.DEFAULT.name,
             brand_name: str = "Все"
-        ):
+    ) -> None:
         async with uow:
             if category_id:
                 products: list[models.Product] = await uow.products.get_all_by(category_id=category_id, status_id=settings.PUBLISHED_STATUS_ID)
@@ -83,6 +85,7 @@ class ProductsService:
                 sort_by=sort_by,
                 products=products,
             )
+            
             
             
             if brand_name != "Все" and brand_name != None:
@@ -114,13 +117,14 @@ class ProductsService:
                 ikb_markup=ikb_markup,
             )
 
+
     async def _show_product(
             self,
             message: Message | None,
             query: CallbackQuery | None,
             product: models.Product,
             ikb_markup: InlineKeyboardMarkup,
-    ):
+    ) -> None:
         photo_url = "https://files.glotr.uz/company/000/002/656/logo/14143547079268-4ae5e4c10cea0e50e657c885a657701e.jpg?_=gzauc"
         if product.photos:
             photo_url = product.photos[0].photo_url
@@ -157,13 +161,12 @@ class ProductsService:
             await query.message.edit_reply_markup(reply_markup=ikb_markup)
         else:
             await message.answer_photo(photo_url, caption_text, reply_markup=ikb_markup, parse_mode="HTML")
-
     async def change_brand(
             self, 
             query: CallbackQuery,
             callback_data: ChangeBrandCallBackData,
     ):
-        async with uow:
+        # async with uow:
             if callback_data.category_id:
                  products: list[models.Product] = await uow.products.get_all_by(category_id=callback_data.category_id, status_id=settings.PUBLISHED_STATUS_ID)
 
@@ -180,7 +183,6 @@ class ProductsService:
             )
 
             await query.message.edit_reply_markup(reply_markup=ikb_markup)
-
     
     async def sort_products(
             self, 

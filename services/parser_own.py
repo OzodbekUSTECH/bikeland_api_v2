@@ -3,7 +3,10 @@ from schemas.blogs import CreateBlogMediaGroup
 import models
 from database import uow
 from utils.parser_2 import ParserHandlerSecond
+from utils.parser import ParserHandler
 from utils.media_handler import MediaHandler
+from config_bot import send_message_to_tg_admins, bot
+from services import products_service
 
 class ParserService:
 
@@ -85,7 +88,46 @@ class ParserService:
 
             await uow.commit()
 
+    ############################################
+    async def check_products_from_1c(self):
+        async with uow:
+            await products_service.create_products()
+            products = await uow.products.get_all_without_pagination()
+            their_products = await ParserHandler.get_filtered_products()
+            for product1 in products:
+                for product2 in their_products:
+                    # Проверяем, есть ли product1.key в их списке ключей
+                    if 'keys' in product2 and product1.key in product2['keys']:
+                        # Это тот нужный товар, добавьте здесь ваш код для обработки
+                        has_changes = await ParserHandler.has_changes_in_columns_of_1C_products(
+                            product1, product2
+                        )
+                        
+                        if has_changes:
+                            
+                            product_dict = await ParserHandler.create_product_dict(product2)
+                            updated_product: models.Product = await uow.products.update(product1.id, product_dict)
+                            if updated_product.quantity < updated_product.min_quantity:
+                                await self.inform_user_about_quantity_of_product(updated_product)
 
-
+    async def inform_user_about_quantity_of_product(self, product: models.Product):
+        
+            
+            message_text = (
+                f"Здравствуйте {product.dealer.full_name}. Вас приветствует администратор Bikeland.Uz\n"
+                f"Ваш товар: {product.title}\n"
+                f"Осталось на складе: {product.quantity}\n"
+                f"Для стабильного потока продаж необходимо пополнить склад товаром {product.title}"
+            )
+            if product.dealer.telegram_id:
+                await bot.send_message(chat_id=product.dealer.telegram_id, text=message_text)
+            else:
+                message_notification = (
+                    f"Дилер {product.dealer.full_name} не зарегистрирован в боте и не может получать уведомления.\n"
+                    f"Номер телефона дилера: {product.dealer.phone_number}\n"
+                    "Для правильной работы уведомлений дилер должен перейти в бота @BikelandUz_bot и отправить свой контакт"
+                )
+                await send_message_to_tg_admins(message_notification)
+                
 parser_service = ParserService()
 

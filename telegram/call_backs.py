@@ -34,5 +34,9 @@ class ChangeBrandCallBackData(CallbackData, prefix="categories_callback"):
     sort_by: Optional[str] = None
 
 
+class PaginationBasketCallbackData(CallbackData, prefix="sub_cb"):
+    name: Optional[str] = None
+    current_page: int = 1
+
 
 

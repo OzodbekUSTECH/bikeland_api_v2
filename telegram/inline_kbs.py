@@ -3,7 +3,7 @@ from config import settings
 import models
 from telegram.utils.pagination import Pagination
 from telegram.btn_names import SorterBtnNames
-from telegram.call_backs import PaginationProductsCallBackData, ChangeBrandCallBackData
+from telegram.call_backs import PaginationProductsCallBackData, ChangeBrandCallBackData, PaginationBasketCallbackData
 class InlineKeyboardsHandler:
 
     async def get_pagination_ikbs(
@@ -103,9 +103,29 @@ class InlineKeyboardsHandler:
         row = ikbs + ikb
         ikb_markup = InlineKeyboardMarkup(inline_keyboard=row)
         
+        return ikb_markup
+    
 
-
-        
+    async def get_basket_pagination_ikbs(
+            self,
+            total_pages: int,
+            product: models.Product,
+            current_page: int,
+            order_id: int,
+    ):
+        pagination = Pagination(
+            next_btn_name="➡️",
+            next_cb_name="next_product",
+            prev_btn_name="⬅️",
+            prev_cb_name="prev_product",
+            current_page=current_page,
+            total_pages=total_pages,
+            id = product.id,
+            CallBackDataModel=PaginationBasketCallbackData,
+            order_id = order_id
+        )
+        ikbs = await pagination.create_basket_ikbs()
+        ikb_markup = InlineKeyboardMarkup(inline_keyboard=ikbs)
         return ikb_markup
     
 

@@ -11,7 +11,7 @@ async def get_products_or_sub_categories(message: Message) -> None:
 
 
 @router.callback_query(PaginationProductsCallBackData.filter())
-async def paginate_products(query: CallbackQuery, callback_data: PaginationProductsCallBackData):
+async def paginate_products(query: CallbackQuery, callback_data: PaginationProductsCallBackData) -> None:
     
     if callback_data.name == "next_product":
         callback_data.current_page += 1

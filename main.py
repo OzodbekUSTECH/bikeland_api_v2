@@ -29,14 +29,16 @@ app.add_middleware(
 )
 
 
-# @app.on_event("startup")
-# async def startup_event():
-#     redis = aioredis.from_url(
-#         f"{settings.REDIS_URL}",
-#         encoding="utf8",
-#         decode_responses=True,
-#     )
-#     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+import services
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+@app.on_event("startup")
+async def startup_event():
+    """func on start up project"""
+    
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(services.parser_service.check_products_from_1c, 'cron', hour = f"{settings.HOUR}", minute = f"{settings.MINUTE}")
+    scheduler.start()
 
 
 if __name__ == "__main__":

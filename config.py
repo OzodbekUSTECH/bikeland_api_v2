@@ -12,6 +12,8 @@ class DbSettings(BaseModel):
 class Settings(BaseSettings):
     ADMIN_TG_IDS: list[int]
     BOT_TOKEN: str
+    HOUR: str
+    MINUTE: str
 
     MEDIA_URL: str
     DB_HOST: str

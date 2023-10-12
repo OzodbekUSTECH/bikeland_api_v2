@@ -50,7 +50,7 @@ class BlogsService:
     ################################ blog media group ################################
     async def add_media_group(self, blog_id: int, media_group: list[UploadFile]) -> None:
         async with uow:
-            blog: models.Blog = await uow.blogs.get_by_id(id)
+            blog: models.Blog = await uow.blogs.get_by_id(blog_id)
 
             filenames = await MediaHandler.save_media(media_group, MediaHandler.blogs_media_dir)
             await uow.blog_media_group.bulk_create(

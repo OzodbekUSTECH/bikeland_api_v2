@@ -15,9 +15,9 @@ router = APIRouter(
     tags=["Products"],
 )
 
-@router.post('')
-async def parse_1C_products() -> None:
-    await products_service.create_products()
+# @router.post('')
+# async def parse_1C_products() -> None:
+#     await products_service.create_products()
 
 
 @router.post('/media')

@@ -2,7 +2,7 @@ from schemas.orders import CreateOrderSchema
 from schemas.tgclients import CreateTgClientSchema
 import models
 from database import uow
-
+from services import forms_service
 class OrdersService:
 
     async def _create_or_get_tg_client(self, phone_number: str) -> models.TgClient:
@@ -20,7 +20,9 @@ class OrdersService:
             tgclient = await self._create_or_get_tg_client(order_data.phone_number)
             order_dict["tgclient_id"] = tgclient.id
             order = await uow.orders.create(order_dict)
+            await forms_service._inform_tg_admins(order=order)
             await uow.commit()
+
             return order
         
     async def get_orders(self) -> list[models.Order]:

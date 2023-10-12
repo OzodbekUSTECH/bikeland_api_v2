@@ -35,7 +35,7 @@ class ProductsService:
     #         print("Повторяющиеся titles:", duplicate_titles)
 
     async def create_products(self) -> None:
-        async with uow:
+        # async with uow:
             our_products = await uow.products.get_all_without_pagination()
             filtered_products: list[dict] = await ParserHandler.get_filtered_products()
             if len(our_products) != len(filtered_products):

@@ -40,7 +40,7 @@ class WelcomeService:
         if not message.contact:
             await self.ask_for_contacts(message, state)
         else:
-            async with uow:
+            # async with uow:
                 await self._is_dealer(message)
                 existing_tg_client: models.TgClient = await uow.tgclients.get_one_by_phone_number(message.contact.phone_number)
                 if not existing_tg_client:
