@@ -78,7 +78,7 @@ class UnitOfWork:
         self.statistics_of_orders = repositories.StatisticsOfOrdersRepository(self.session, model=models.StatisticOfOrders)
 
       
-    async def __aexit__(self, *args):
+    async def __aexit__(self, *args):     
         await self.session.close()
 
     async def commit(self):
