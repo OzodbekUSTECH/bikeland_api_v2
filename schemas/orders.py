@@ -14,3 +14,4 @@ class OrderSchema(IdResponseSchema, CreateOrderSchema):
     product_title: str
     brand_name: str | None
     source: str
+    type_of_product: str | None

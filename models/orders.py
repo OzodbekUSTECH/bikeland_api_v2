@@ -30,6 +30,14 @@ class Order(BaseTable):
     def brand_name(self) -> str | None:
         return self.product.brand.name if self.product.brand else None
     
+    @hybrid_property
+    def type_of_product(self) -> str | None:
+        if self.product.sub_category_id:
+            return self.product.sub_category.name
+        elif self.product.category_id:
+            return self.product.category.name
+        
+    
     product: Mapped["Product"] = relationship(lazy="immediate")
 
     tgclient_id: Mapped[int] = mapped_column(ForeignKey("tgclients.id"))
