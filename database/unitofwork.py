@@ -8,6 +8,7 @@ import models
 
 
 class UnitOfWork:
+    session = None
     users: Type[repositories.UsersRepository]
     dealers: Type[repositories.DealersRepository]
     blogs: Type[repositories.BlogsRepository]
@@ -41,8 +42,11 @@ class UnitOfWork:
     statistics_of_orders: Type[repositories.StatisticsOfOrdersRepository]
   
     def __init__(self):
-        self.session = session_maker()
-        # self.session = self.session_factory()
+        self.session_factory = session_maker
+
+    async def __aenter__(self):
+        if self.session is None:
+            self.session = self.session_factory()
         self.users = repositories.UsersRepository(self.session, model=models.User)
         self.dealers = repositories.DealersRepository(self.session, model=models.Dealer)
         self.blogs = repositories.BlogsRepository(self.session, model=models.Blog)
@@ -75,19 +79,8 @@ class UnitOfWork:
         self.statistics_of_views = repositories.StatisticsOfViewsRepository(self.session, model=models.StatisticOfViews)
         self.statistics_of_orders = repositories.StatisticsOfOrdersRepository(self.session, model=models.StatisticOfOrders)
 
-    # async def __aenter__(self):
-    #     if self.session is None:
-            
-        
-        
-        
-        
-        
       
-    async def __aenter__(self):
-        return self
-
-    async def __aexit__(self, *args):
+    async def __aexit__(self, *args):     
         # await self.session.close()
         ...
 
