@@ -48,6 +48,7 @@ class UnitOfWork:
         if self.session is None:
             self.session = self.session_factory()
         
+        
         # self.session = self.session_factory()
         self.users = repositories.UsersRepository(self.session, model=models.User)
         self.dealers = repositories.DealersRepository(self.session, model=models.Dealer)
@@ -81,7 +82,6 @@ class UnitOfWork:
         self.statistics_of_views = repositories.StatisticsOfViewsRepository(self.session, model=models.StatisticOfViews)
         self.statistics_of_orders = repositories.StatisticsOfOrdersRepository(self.session, model=models.StatisticOfOrders)
         
-        return self
         
       
     async def __aexit__(self, *args):     
