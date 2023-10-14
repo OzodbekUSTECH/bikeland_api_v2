@@ -16,7 +16,7 @@ class ProductsRepository(BaseRepository):
         filtered_products = result.scalars().all()
         
         # Add sorting logic if needed
-        # filtered_products = await params.sort_products(filtered_products)
+        filtered_products = params.sort_products(filtered_products)
         
         return filtered_products
 

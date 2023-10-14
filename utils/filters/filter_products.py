@@ -81,7 +81,7 @@ class FilterProductsParams(BaseFilterParams):
 
         return all(filters)
 
-    async def sort_products(self, products: list[models.Product]) -> list[models.Product]:
+    def sort_products(self, products: list[models.Product]) -> list[models.Product]:
         if self.price_by_asc is not None:
             sort_key = lambda product: product.uzb_price
             products = sorted(
