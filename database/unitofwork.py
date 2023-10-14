@@ -88,7 +88,8 @@ class UnitOfWork:
         return self
 
     async def __aexit__(self, *args):
-        await self.session.close()
+        # await self.session.close()
+        ...
 
     async def commit(self):
         await self.session.commit()
