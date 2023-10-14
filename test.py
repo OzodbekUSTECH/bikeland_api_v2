@@ -43,3 +43,8 @@
 
 # asyncio.get_event_loop().run_forever()
 
+# from services import products_service
+
+# import asyncio
+
+# asyncio.run(products_service.change_sub_status())

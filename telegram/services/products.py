@@ -79,7 +79,7 @@ class ProductsService:
                 products: list[models.Product] = await uow.products.get_all_by(category_id=category_id, status_id=settings.PUBLISHED_STATUS_ID)
 
             else:
-                products: list[models.Product] = await uow.products.get_all_by(sub_category_id=category_id, status_id=settings.PUBLISHED_STATUS_ID)
+                products: list[models.Product] = await uow.products.get_all_by(sub_category_id=sub_category_id, status_id=settings.PUBLISHED_STATUS_ID)
 
             products = await FilterProductsHandler.filter_products(
                 sort_by=sort_by,
