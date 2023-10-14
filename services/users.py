@@ -4,7 +4,6 @@ from datetime import timedelta
 from schemas.users import TokenData
 import models
 from security.jwt_handler import JWTHandler
-from database import uow
 from utils.exceptions import CustomException
 from utils.media_handler import MediaHandler
 
@@ -12,7 +11,7 @@ from jose import JWTError
 
 class UsersService:
     
-    async def create_user(self, user_data: CreateUserSchema) -> models.User:
+    async def create_user(self,uow, user_data: CreateUserSchema) -> models.User:
         user_dict = user_data.model_dump()
         hashed_password = PasswordHandler.hash(user_data.password)
         user_dict["password"] = hashed_password
@@ -24,15 +23,15 @@ class UsersService:
             await uow.commit()
             return user
         
-    async def get_list_of_users(self) -> list[models.User]:
+    async def get_list_of_users(self, uow) -> list[models.User]:
         async with uow:
             return await uow.users.get_all()
         
-    async def get_user_by_id(self, id: int) -> models.User:
+    async def get_user_by_id(self, uow, id: int) -> models.User:
         async with uow:
             return await uow.users.get_by_id(id)
     
-    async def update_user(self, id: int, user_data: UpdateUserSchema) -> models.User:
+    async def update_user(self,uow, id: int, user_data: UpdateUserSchema) -> models.User:
         async with uow:
             user: models.User = await uow.users.get_by_id(id)
             user_dict= user_data.model_dump(exclude={"filename"})
@@ -44,7 +43,7 @@ class UsersService:
             await uow.commit()
             return user
         
-    async def delete_user(self, id: int) -> models.User:
+    async def delete_user(self,uow, id: int) -> models.User:
         async with uow:
             user: models.User = await uow.users.get_by_id(id)
             await uow.users.delete(user.id)
@@ -52,7 +51,7 @@ class UsersService:
             return user
 
     ################################
-    async def authenticate_user(self, email: str, password: str) -> TokenSchema:
+    async def authenticate_user(self, uow, email: str, password: str) -> TokenSchema:
         async with uow:
             user: models.User = await uow.users.get_by_email(email)
                 
@@ -66,7 +65,7 @@ class UsersService:
             )
             return TokenSchema(access_token=access_token, token_type="Bearer")
     
-    async def get_current_user(self, token: str) -> models.User:
+    async def get_current_user(self, uow,token: str) -> models.User:
         credentials_exception = CustomException.unauthorized("Could not validate credentials")
         try:
             payload = await JWTHandler.decode(token)

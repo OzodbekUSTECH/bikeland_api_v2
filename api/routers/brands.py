@@ -13,31 +13,37 @@ router = APIRouter(
     tags=["Brands"],
 )
 
+from database import uow_dep
+
 @router.post('', response_model=IdResponseSchema)
 async def create_brand(
-    brand_data: CreateBrandSchema
+    brand_data: CreateBrandSchema,
+    uow: uow_dep,
 ):
-    return await brands_service.create_brand(brand_data)
+    return await brands_service.create_brand(uow, brand_data)
 
 @router.get('', response_model=Page[BrandSchema])
-async def get_brands():
-    return await brands_service.get_brands()
+async def get_brands(uow: uow_dep,):
+    return await brands_service.get_brands(uow)
 
 @router.get('/{id}', response_model=BrandSchema)
 async def get_brand_by_id(
-    id: int
+    id: int,
+    uow: uow_dep,
 ):
-    return await brands_service.get_brand_by_id(id)
+    return await brands_service.get_brand_by_id(uow, id)
 
 @router.put('/{id}', response_model=BrandSchema)
 async def update_brand(
     id: int,
+    uow: uow_dep,
     brand_data: UpdateBrandSchema
 ):
-    return await brands_service.update_brand(id, brand_data)
+    return await brands_service.update_brand(uow, id, brand_data)
 
 @router.delete('/{id}', response_model=IdResponseSchema)
 async def delete_brand(
-    id: int
+    id: int,
+    uow: uow_dep,
 ):
-    return await brands_service.delete_brand(id)
+    return await brands_service.delete_brand(uow, id)

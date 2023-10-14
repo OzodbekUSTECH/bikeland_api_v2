@@ -15,10 +15,12 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/auth/login")
 
 
 async def get_current_user(
+    uow: UOWDependency,
+        
     token: str = Depends(oauth2_scheme),
     # users_service: services.UsersService = Depends(get_users_services)
 ) -> models.User:
-    return await services.users_service.get_current_user(token)
+    return await services.users_service.get_current_user(uow, token)
 
 
 

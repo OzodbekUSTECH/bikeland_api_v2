@@ -1,11 +1,10 @@
 from schemas.dealers import CreateDealerSchema, UpdateDealerSchema
 import models
-from database import uow
 from utils.media_handler import MediaHandler
 
 class DealersService:
 
-    async def create_dealer(self, dealer_data: CreateDealerSchema) -> models.Dealer:
+    async def create_dealer(self,uow, dealer_data: CreateDealerSchema) -> models.Dealer:
         dealer_dict = dealer_data.model_dump()
         if dealer_data.filename is not None:
             filename = await MediaHandler.save_media(dealer_data.filename, MediaHandler.dealers_media_dir)
@@ -19,15 +18,15 @@ class DealersService:
             await uow.commit()
             return dealer
         
-    async def get_dealers(self) -> list[models.Dealer]:
+    async def get_dealers(self,uow,) -> list[models.Dealer]:
         async with uow:
             return await uow.dealers.get_all()
         
-    async def get_dealer_by_id(self, id: int) -> models.Dealer:
+    async def get_dealer_by_id(self,uow, id: int) -> models.Dealer:
         async with uow:
             return await uow.dealers.get_by_id(id)
         
-    async def update_dealer(self, id: int, dealer_data: UpdateDealerSchema) -> models.Dealer:
+    async def update_dealer(self,uow, id: int, dealer_data: UpdateDealerSchema) -> models.Dealer:
         dealer_dict = dealer_data.model_dump(exclude={"filename"})
         if dealer_data.filename is not None:
             filename = await MediaHandler.save_media(dealer_data.filename, MediaHandler.dealers_media_dir)
@@ -42,7 +41,7 @@ class DealersService:
             await uow.commit()
             return dealer
         
-    async def delete_dealer(self, id: int) -> models.Dealer:
+    async def delete_dealer(self,uow, id: int) -> models.Dealer:
         async with uow:
             dealer: models.Dealer = await uow.dealers.get_by_id(id)
             await uow.dealers.delete(dealer.id)

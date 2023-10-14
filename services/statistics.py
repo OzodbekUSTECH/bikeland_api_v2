@@ -1,6 +1,5 @@
 from schemas.statistics import CreateStatisticOfViewsSchema, CreateStatisticOfOrdersSchema
 import models
-from database import uow
 from datetime import datetime, timedelta
 from utils.exceptions import CustomException
 
@@ -9,6 +8,7 @@ class StatisticsService:
 
     async def increase_statistic(
             self,
+            uow,
             for_views: bool | None,
             for_orders: bool | None
         ) -> None:
@@ -29,6 +29,7 @@ class StatisticsService:
 
     async def get_statistics_by_period(
             self,
+            uow,
             for_views: bool | None,
             for_orders: bool | None, 
             start_date: str | None, 
@@ -46,6 +47,7 @@ class StatisticsService:
         
     async def calculate_percentage_statistics(
         self,
+        uow,
         for_views: bool | None,
         for_orders: bool | None,
     ):

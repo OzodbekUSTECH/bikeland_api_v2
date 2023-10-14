@@ -13,8 +13,11 @@ router = APIRouter(
     tags=["Payment Methods (resource catalog)"],
 )
 
+from database import uow_dep
+
 @router.post('', response_model=IdResponseSchema)
 async def create_payment_method(
+    uow: uow_dep,
     type: str = Form(),
     photo: UploadFile = File()
 ):
@@ -22,20 +25,22 @@ async def create_payment_method(
         type=type,
         filename=photo,
     )
-    return await payment_methods_service.create_payment_method(payment_data)
+    return await payment_methods_service.create_payment_method(uow, payment_data)
 
 @router.get('', response_model=Page[PaymentMethodSchema])
-async def get_payment_methods():
-    return await payment_methods_service.get_payment_methods()
+async def get_payment_methods(uow: uow_dep,):
+    return await payment_methods_service.get_payment_methods(uow)
 
 @router.get('/{id}',response_model=PaymentMethodSchema)
 async def get_payment_method_by_id(
-    id: int
+    id: int,
+    uow: uow_dep,
 ):
-    return await payment_methods_service.get_payment_method_by_id(id)
+    return await payment_methods_service.get_payment_method_by_id(uow, id)
 
 @router.put('/{id}',response_model=IdResponseSchema)
 async def update_payment_method(
+    uow: uow_dep,
     id: int, 
     type: str = Form(),
     photo: UploadFile = File(None)
@@ -44,10 +49,11 @@ async def update_payment_method(
         type=type,
         filename=photo
     )
-    return await payment_methods_service.update_payment_method(id, payment_data)
+    return await payment_methods_service.update_payment_method(uow, id, payment_data)
 
 @router.delete('/{id}',response_model=IdResponseSchema)
 async def delete_payment_method(
-    id: int
+    id: int,
+    uow: uow_dep,
 ):
-    return await payment_methods_service.delete_payment_method(id)
+    return await payment_methods_service.delete_payment_method(uow, id)

@@ -14,9 +14,11 @@ router = APIRouter(
     tags=["Users"],
 )
 
+from database import uow_dep
 
 @router.post("/{locale}", response_model=IdResponseSchema)
 async def create_user(
+    uow: uow_dep,
     photo: UploadFile = File(None),
     full_name: str = Form(),
     email: str = Form(),
@@ -30,21 +32,23 @@ async def create_user(
         phone_number=phone_number,
         password=password
     )
-    return await users_service.create_user(user_data)
+    return await users_service.create_user(uow,user_data)
 
 @router.get('', response_model=Page[UserSchema])
-async def get_users():
-    return await users_service.get_list_of_users()
+async def get_users(uow: uow_dep,):
+    return await users_service.get_list_of_users(uow)
 
 @router.get('/{id}', response_model=UserSchema)
 async def get_user_by_id(
-    id: int
+    id: int,
+    uow: uow_dep,
 ):
-    return await users_service.get_user_by_id(id)
+    return await users_service.get_user_by_id(uow, id)
 
 @router.put('/{id}', response_model=IdResponseSchema)
 async def update_user(
     id: int,
+    uow: uow_dep,
     photo: UploadFile = File(None),
     full_name: str = Form(),
     email: EmailStr = Form(),
@@ -56,10 +60,11 @@ async def update_user(
         email=email,
         phone_number=phone_number,
     )
-    return await users_service.update_user(id, user_data)
+    return await users_service.update_user(uow, id, user_data)
 
 @router.delete('/{id}', response_model=IdResponseSchema)
 async def delete_user(
-    id: int
+    id: int,
+    uow: uow_dep,
 ):
-    return await users_service.delete_user(id)
+    return await users_service.delete_user(uow, id)

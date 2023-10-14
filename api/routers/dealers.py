@@ -13,9 +13,10 @@ router = APIRouter(
     tags=["Dealers"],
 )
 
-
+from database import uow_dep
 @router.post('', response_model=IdResponseSchema)
 async def create_dealer(
+    uow: uow_dep,
     full_name: str = Form(),
     photo: UploadFile = File(None),
     phone_number: str = Form()
@@ -25,21 +26,23 @@ async def create_dealer(
         filename=photo,
         phone_number=phone_number
     )
-    return await dealers_service.create_dealer(dealer_data)
+    return await dealers_service.create_dealer(uow, dealer_data)
 
 @router.get('', response_model=Page[DealerSchema])
-async def get_dealers():
-    return await dealers_service.get_dealers()
+async def get_dealers(uow: uow_dep,):
+    return await dealers_service.get_dealers(uow)
 
 @router.get('/{id}', response_model=DealerSchema)
 async def get_dealer_by_id(
-    id: int
+    id: int,
+    uow: uow_dep,
 ):
-    return await dealers_service.get_dealer_by_id(id)
+    return await dealers_service.get_dealer_by_id(uow, id)
 
 @router.put('/{id}', response_model=IdResponseSchema)
 async def update_dealer(
     id: int,
+    uow: uow_dep,
     full_name: str = Form(),
     photo: UploadFile = File(None),
     phone_number: str = Form()
@@ -49,10 +52,11 @@ async def update_dealer(
         filename=photo,
         phone_number=phone_number
     )
-    return await dealers_service.update_dealer(id, dealer_data)
+    return await dealers_service.update_dealer(uow, id, dealer_data)
 
 @router.delete('/{id}', response_model=IdResponseSchema)
 async def delete_dealer(
-    id: int
+    id: int,
+    uow: uow_dep,
 ):
-    return await dealers_service.delete_dealer(id)
+    return await dealers_service.delete_dealer(uow, id)

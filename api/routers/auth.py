@@ -11,6 +11,8 @@ from schemas.users import (
 from schemas import IdResponseSchema
 from fastapi.security import OAuth2PasswordRequestForm
 
+from database import uow_dep
+
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"],
@@ -19,8 +21,9 @@ router = APIRouter(
 @router.post("/login", response_model=TokenSchema)
 async def get_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    uow: uow_dep
 ):
-    return await users_service.authenticate_user(form_data.username, form_data.password)
+    return await users_service.authenticate_user(uow, form_data.username, form_data.password)
 
 @router.get("/me", response_model=UserSchema)
 async def get_own_user(
