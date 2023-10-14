@@ -109,4 +109,36 @@ class FilterProductsParams(BaseFilterParams):
         
         return products
 
+
+    def to_filter_dict(self):
+        filter_dict = {}
+
+        if self.category_id is not None:
+            filter_dict['category_id'] = self.category_id
+
+        if self.sub_category_id is not None:
+            filter_dict['sub_category_id'] = self.sub_category_id
+
+        if self.dealer_id is not None:
+            filter_dict['dealer_id'] = self.dealer_id
+
+        if self.title is not None:
+            # Add fuzzy matching if needed
+            filter_dict['title'] = self.title.lower()
+
+        if self.status_id is not None:
+            filter_dict['status_id'] = self.status_id
+
+        if self.brand_id is not None:
+            filter_dict['brand_id'] = self.brand_id
+
+        if self.show_on_main_page is not None:
+            filter_dict['show_on_main_page'] = self.show_on_main_page
+
+        if self.show_on_see_also is not None:
+            filter_dict['show_on_see_also'] = self.show_on_see_also
+
+        
+
+        return filter_dict
     

@@ -42,9 +42,13 @@ class UnitOfWork:
   
     def __init__(self):
         self.session_factory = session_maker
+        self.session = None
 
     async def __aenter__(self):
-        self.session = self.session_factory()
+        if self.session is None:
+            self.session = self.session_factory()
+        
+        # self.session = self.session_factory()
         self.users = repositories.UsersRepository(self.session, model=models.User)
         self.dealers = repositories.DealersRepository(self.session, model=models.Dealer)
         self.blogs = repositories.BlogsRepository(self.session, model=models.Blog)
@@ -76,7 +80,9 @@ class UnitOfWork:
 
         self.statistics_of_views = repositories.StatisticsOfViewsRepository(self.session, model=models.StatisticOfViews)
         self.statistics_of_orders = repositories.StatisticsOfOrdersRepository(self.session, model=models.StatisticOfOrders)
-
+        
+        return self
+        
       
     async def __aexit__(self, *args):     
         await self.session.close()
