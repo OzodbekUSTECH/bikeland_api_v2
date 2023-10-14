@@ -90,6 +90,6 @@ class UnitOfWork:
     
 
 uow = UnitOfWork()
-from typing import Annotated
-from fastapi import Depends
-uow_dep = Annotated[UnitOfWork, Depends(UnitOfWork)]
+# from typing import Annotated
+# from fastapi import Depends
+# uow_dep = Annotated[UnitOfWork, Depends(UnitOfWork)]

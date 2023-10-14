@@ -1,10 +1,13 @@
 from schemas.statistics import CreateStatisticOfViewsSchema, CreateStatisticOfOrdersSchema
 import models
-from database import uow
+from database import UnitOfWork
 from datetime import datetime, timedelta
 from utils.exceptions import CustomException
 
 class StatisticsService:
+
+    def __init__(self):
+        self.uow = UnitOfWork()
 
 
     async def increase_statistic(
@@ -13,19 +16,19 @@ class StatisticsService:
             for_orders: bool | None
         ) -> None:
         current_date = datetime.now().strftime("%d.%m.%Y")
-        async with uow:
+        async with self.uow:
             if for_views:
-                current_date_of_stats: models.StatisticOfViews = await uow.statistics_of_views.get_one_by(date=current_date)
+                current_date_of_stats: models.StatisticOfViews = await self.uow.statistics_of_views.get_one_by(date=current_date)
                 if not current_date_of_stats:
-                    current_date_of_stats: models.StatisticOfViews = await uow.statistics_of_views.create(CreateStatisticOfViewsSchema().model_dump())
+                    current_date_of_stats: models.StatisticOfViews = await self.uow.statistics_of_views.create(CreateStatisticOfViewsSchema().model_dump())
             elif for_orders:
-                current_date_of_stats: models.StatisticOfOrders = await uow.statistics_of_orders.get_one_by(date=current_date)
+                current_date_of_stats: models.StatisticOfOrders = await self.uow.statistics_of_orders.get_one_by(date=current_date)
                 if not current_date_of_stats:
-                    current_date_of_stats: models.StatisticOfOrders = await uow.statistics_of_orders.create(CreateStatisticOfOrdersSchema().model_dump())
+                    current_date_of_stats: models.StatisticOfOrders = await self.uow.statistics_of_orders.create(CreateStatisticOfOrdersSchema().model_dump())
             else:
                 raise CustomException.conflict("Chose for views or orders by giving TRUE value")
             await current_date_of_stats.increase_counter()
-            await uow.commit()
+            await self.uow.commit()
 
     async def get_statistics_by_period(
             self,
@@ -34,11 +37,11 @@ class StatisticsService:
             start_date: str | None, 
             end_date: str | None
         ) -> list[models.StatisticOfViews] | list[models.StatisticOfOrders]:
-        async with uow:
+        async with self.uow:
             if for_views:
-                stats = await uow.statistics_of_views.get_by_period(start_date, end_date)
+                stats = await self.uow.statistics_of_views.get_by_period(start_date, end_date)
             elif for_orders:
-                stats = await uow.statistics_of_orders.get_by_period(start_date, end_date)
+                stats = await self.uow.statistics_of_orders.get_by_period(start_date, end_date)
             else:
                 raise CustomException.conflict("Chose for views or orders by giving TRUE value")
             
@@ -59,17 +62,17 @@ class StatisticsService:
         seven_days_ago_str = seven_days_ago.strftime("%d.%m.%Y")
         thirty_days_ago_str = thirty_days_ago.strftime("%d.%m.%Y")
 
-        async with uow:
+        async with self.uow:
             if for_orders:
-                today_stats = await uow.statistics_of_orders.get_one_by(date=today_str)
-                one_day_ago_stats = await uow.statistics_of_orders.get_one_by(date=one_day_ago_str)
-                seven_days_ago_stats = await uow.statistics_of_orders.get_one_by(date=seven_days_ago_str)
-                thirty_days_ago_stats = await uow.statistics_of_orders.get_one_by(date=thirty_days_ago_str)
+                today_stats = await self.uow.statistics_of_orders.get_one_by(date=today_str)
+                one_day_ago_stats = await self.uow.statistics_of_orders.get_one_by(date=one_day_ago_str)
+                seven_days_ago_stats = await self.uow.statistics_of_orders.get_one_by(date=seven_days_ago_str)
+                thirty_days_ago_stats = await self.uow.statistics_of_orders.get_one_by(date=thirty_days_ago_str)
             elif for_views:
-                today_stats = await uow.statistics_of_views.get_one_by(date=today_str)
-                one_day_ago_stats = await uow.statistics_of_views.get_one_by(date=one_day_ago_str)
-                seven_days_ago_stats = await uow.statistics_of_views.get_one_by(date=seven_days_ago_str)
-                thirty_days_ago_stats = await uow.statistics_of_views.get_one_by(date=thirty_days_ago_str)
+                today_stats = await self.uow.statistics_of_views.get_one_by(date=today_str)
+                one_day_ago_stats = await self.uow.statistics_of_views.get_one_by(date=one_day_ago_str)
+                seven_days_ago_stats = await self.uow.statistics_of_views.get_one_by(date=seven_days_ago_str)
+                thirty_days_ago_stats = await self.uow.statistics_of_views.get_one_by(date=thirty_days_ago_str)
             else:
                 raise ValueError("Either 'for_orders' or 'for_views' must be True")
 

@@ -1,2 +1,2 @@
 from database.db import session_maker
-from database.unitofwork import uow
+from database.unitofwork import uow, UnitOfWork
