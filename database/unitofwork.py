@@ -8,7 +8,6 @@ import models
 
 
 class UnitOfWork:
-    session = None
     users: Type[repositories.UsersRepository]
     dealers: Type[repositories.DealersRepository]
     blogs: Type[repositories.BlogsRepository]
@@ -45,8 +44,7 @@ class UnitOfWork:
         self.session_factory = session_maker
 
     async def __aenter__(self):
-        if self.session is None:
-            self.session = self.session_factory()
+        self.session = self.session_factory()
         self.users = repositories.UsersRepository(self.session, model=models.User)
         self.dealers = repositories.DealersRepository(self.session, model=models.Dealer)
         self.blogs = repositories.BlogsRepository(self.session, model=models.Blog)
@@ -81,8 +79,7 @@ class UnitOfWork:
 
       
     async def __aexit__(self, *args):     
-        # await self.session.close()
-        ...
+        await self.session.close()
 
     async def commit(self):
         await self.session.commit()
