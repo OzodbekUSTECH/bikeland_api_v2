@@ -1,4 +1,4 @@
-from database import uow
+from database import UnitOfWork
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
@@ -60,20 +60,20 @@ class OrdersService:
         else:
             await message.answer("Пожалуйста, введите корректный номер телефона, начиная с символа '+' и содержащий только цифры.")
 
-    async def get_quantity_and_show_order_data(self, message: Message, state: FSMContext):
+    async def get_quantity_and_show_order_data(self, message: Message, state: FSMContext, uow: UnitOfWork):
         if re.match(r"^\d+$", message.text):  # Проверяем, что введен текст состоит только из цифр
             quantity = int(message.text)
             if quantity < 1:
                 return await message.answer(f"Вывведите число от 1 и не больше остатка")
             else:
                 await state.update_data(quantity = quantity)
-                await self.show_order_data(message, state)
+                await self.show_order_data(message, state, uow)
         else:
             return await message.answer("Введите корректное количество")
 
-    async def show_order_data(self, message: Message, state: FSMContext) -> None:
+    async def show_order_data(self, message: Message, state: FSMContext, uow: UnitOfWork) -> None:
         data = await state.get_data()
-        readable_data = await self._show_data(message, data, state)
+        readable_data = await self._show_data(message, data, state, uow)
         
         message_text = (
             "Ваш заказ принят, ожидайте. Скоро менеджер с вами свяжется\n\n"
@@ -82,30 +82,29 @@ class OrdersService:
         ikbs = await rkbs_handler.get_welcome_rkbs(tg_id=message.from_user.id)
         await message.answer(message_text, reply_markup=ikbs)
 
-    async def _show_data(self, message: Message, data: dict, state: FSMContext):
+    async def _show_data(self, message: Message, data: dict, state: FSMContext, uow: UnitOfWork):
         region = data.get('region', None)
         name = data.get('name', None)
         phone_number = data.get('phone_number', None)
         product_id = data.get('product_id', None)
         quantity = data.get('quantity', 1)
         
-        async with uow:
-            tgclient: models.TgClient = await uow.tgclients.get_one_by(telegram_id=message.from_user.id)
+        tgclient: models.TgClient = await uow.tgclients.get_one_by(telegram_id=message.from_user.id)
 
-            order_dict = CreateOrderSchema(
-                name=name,
-                phone_number=phone_number,
-                product_id=product_id,
-                quantity=quantity,
-                region=region,
-                known_from="Телеграм бот",
-            ).model_dump()
-            order_dict["source"] = "Телеграм бот"
-            order_dict["tgclient_id"] = tgclient.id
-           
-            order:models.Order = await uow.orders.create(order_dict)
-            await uow.commit()
-            await self.send_notification_to_admins_tg(order)
+        order_dict = CreateOrderSchema(
+            name=name,
+            phone_number=phone_number,
+            product_id=product_id,
+            quantity=quantity,
+            region=region,
+            known_from="Телеграм бот",
+        ).model_dump()
+        order_dict["source"] = "Телеграм бот"
+        order_dict["tgclient_id"] = tgclient.id
+        
+        order:models.Order = await uow.orders.create(order_dict)
+        await uow.commit()
+        await self.send_notification_to_admins_tg(order, uow)
              
         unpacked_data = (
             f"Регион: {region}\n"
@@ -120,7 +119,7 @@ class OrdersService:
         return unpacked_data  
 
 
-    async def send_notification_to_admins_tg(self, order: models.Order) -> None:
+    async def send_notification_to_admins_tg(self, order: models.Order, uow: UnitOfWork) -> None:
         
         message_text = (
                 f"Заказ из телеграм бота\n\n"

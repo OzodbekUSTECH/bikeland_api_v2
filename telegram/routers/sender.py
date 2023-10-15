@@ -3,7 +3,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from telegram.services import sender_service
 from telegram.states import SenderStates 
-
+from database import UnitOfWork
 router = Router()
 
 @router.message(F.text == "Сделать рассылку")
@@ -16,5 +16,6 @@ async def save_post(message: Message, state: FSMContext):
 
 
 @router.message(SenderStates.is_done)
-async def send_or_cancel_sender(message: Message, state: FSMContext):
-    await sender_service.send_or_cancel_sender(message, state)
+async def send_or_cancel_sender(message: Message, state: FSMContext, uow = UnitOfWork()):
+    async with uow:
+        await sender_service.send_or_cancel_sender(message, state, uow)

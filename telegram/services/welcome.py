@@ -1,4 +1,4 @@
-from database import uow
+from database import UnitOfWork
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from telegram.states import WelcomeStates
@@ -15,8 +15,7 @@ class WelcomeService:
         )
         await message.answer(message_text, reply_markup=rkb_markup)
 
-    async def ask_for_contacts(self, message: Message, state: FSMContext) -> None:
-        async with uow:
+    async def ask_for_contacts(self, message: Message, state: FSMContext, uow: UnitOfWork) -> None:
             existing_tgclient = await uow.tgclients.get_one_by(telegram_id=message.from_user.id)
             if not existing_tgclient:
 
@@ -30,18 +29,17 @@ class WelcomeService:
             else:
                 await self._say_welcome(message)
 
-    async def _is_dealer(self, message: Message) -> None:
+    async def _is_dealer(self, message: Message, uow: UnitOfWork) -> None:
         dealer: models.Dealer = await uow.dealers.get_one_by_phone_number(message.contact.phone_number)
         if dealer:
             dealer.telegram_id = message.from_user.id
-            await uow.commit()
+            
 
-    async def register_tg_client(self, message: Message, state: FSMContext) -> None:
+    async def register_tg_client(self, message: Message, state: FSMContext, uow: UnitOfWork) -> None:
         if not message.contact:
-            await self.ask_for_contacts(message, state)
+            await self.ask_for_contacts(message, state, uow)
         else:
-            # async with uow:
-                await self._is_dealer(message)
+                await self._is_dealer(message, uow)
                 existing_tg_client: models.TgClient = await uow.tgclients.get_one_by_phone_number(message.contact.phone_number)
                 if not existing_tg_client:
                     client_dict = CreateTgClientSchema(

@@ -1,4 +1,4 @@
-from database import uow
+from database import UnitOfWork
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from telegram.states import SenderStates 
@@ -38,7 +38,7 @@ class SenderService:
             await message.answer(message_text, reply_markup=rkb_markup)
             await state.set_state(SenderStates.is_done)
 
-    async def send_or_cancel_sender(self, message: Message, state: FSMContext):
+    async def send_or_cancel_sender(self, message: Message, state: FSMContext, uow: UnitOfWork):
         if message.text == "Отменить":
             await state.clear()
             rkb_markup = await rkbs_handler.get_welcome_rkbs(tg_id=message.from_user.id)
@@ -48,19 +48,18 @@ class SenderService:
             photo = data.get("photo", None)
             video = data.get("video", None)
             caption = data.get("caption", None)
-            async with uow:
-                tg_clients: list[models.TgClient] = await uow.tgclients.get_all_without_pagination()
-                for client in tg_clients:
-                    if client.telegram_id:
-                        if photo:
-                            await bot.send_photo(chat_id=client.telegram_id, photo=photo, caption=caption)
-                        elif video:
-                            await bot.send_video(chat_id=client.telegram_id, video=video, caption=caption)
-                        else:
-                            await bot.send_message(chat_id=client.telegram_id, text=caption)
+            tg_clients: list[models.TgClient] = await uow.tgclients.get_all_without_pagination()
+            for client in tg_clients:
+                if client.telegram_id:
+                    if photo:
+                        await bot.send_photo(chat_id=client.telegram_id, photo=photo, caption=caption)
+                    elif video:
+                        await bot.send_video(chat_id=client.telegram_id, video=video, caption=caption)
+                    else:
+                        await bot.send_message(chat_id=client.telegram_id, text=caption)
 
-                rkb_markup = await rkbs_handler.get_welcome_rkbs(message.from_user.id)
-                await message.answer("рассылка прошла успешно", reply_markup=rkb_markup)
-                await state.clear()
+            rkb_markup = await rkbs_handler.get_welcome_rkbs(message.from_user.id)
+            await message.answer("рассылка прошла успешно", reply_markup=rkb_markup)
+            await state.clear()
 
 sender_service = SenderService()

@@ -4,6 +4,7 @@ from telegram.services import orders_service
 from telegram.call_backs import OrderCallBackData
 from aiogram.fsm.context import FSMContext
 from telegram.states import OrderStates
+from database import UnitOfWork
 
 router = Router()
 
@@ -41,9 +42,10 @@ async def get_phone_number(message: Message, state: FSMContext) -> None:
         await orders_service.get_phone_number(message, state)
 
 @router.message(OrderStates.quantity)
-async def get_quantity_and_show_order_data(message: Message, state: FSMContext) -> None:
+async def get_quantity_and_show_order_data(message: Message, state: FSMContext, uow = UnitOfWork()) -> None:
     if message.text == "Отменить":
         await orders_service.cancel_ordering(message, state)
     else:
-        await orders_service.get_quantity_and_show_order_data(message, state)
+        async with uow:
+            await orders_service.get_quantity_and_show_order_data(message, state, uow)
 

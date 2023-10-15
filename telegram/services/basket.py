@@ -1,4 +1,4 @@
-from database import uow
+from database import UnitOfWork
 from aiogram.types import Message, CallbackQuery
 import models
 from aiogram.types.input_media_photo import InputMediaPhoto
@@ -7,16 +7,17 @@ from aiogram.types import InlineKeyboardMarkup
 
 class BasketService:
 
-    async def show_basket(self, message: Message):
-        await self.paginate_basket(message=message)
+    async def show_basket(self, message: Message, uow: UnitOfWork):
+        await self.paginate_basket(message=message, uow=uow)
 
     async def paginate_basket(
             self,
+            uow: UnitOfWork,
             message: Message = None,
             query: CallbackQuery = None,
             current_page: int = 1,
     ):
-        async with uow:
+        # async with uow:
             if message:
                 telegram_id = message.from_user.id
             else:

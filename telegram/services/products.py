@@ -1,4 +1,4 @@
-from database import uow
+from database import UnitOfWork
 from aiogram.types import Message, CallbackQuery
 import models
 from telegram.reply_kbs import rkbs_handler
@@ -20,7 +20,7 @@ class ProductsService:
         self.cache_sub_categories = []
         self.message_exceptions = ["Назад", "Корзина", "/start", "Отменить", "Сделать рассылку"]
 
-    async def _notify_admins_tg(self, message: Message):
+    async def _notify_admins_tg(self, message: Message, uow: UnitOfWork):
             telegram_client: models.TgClient = await uow.tgclients.get_one_by(telegram_id=message.from_user.id)
             timestamp = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
             message_text = (
@@ -33,32 +33,33 @@ class ProductsService:
 
                 await bot.send_message(chat_id=admin_tg_id, text=message_text)
 
-    async def get_products(self, message: Message) -> None:
-        async with uow: 
-            if not self.cache_categories or not self.cache_sub_categories:
-                self.cache_categories = [category.name for category in await uow.categories.get_all_without_pagination()]
-                self.cache_sub_categories = [sub_category.name for sub_category in await uow.sub_categories.get_all_without_pagination()]
-            if message.text == "Назад":
-                rkb_markup = await rkbs_handler.get_welcome_rkbs(message.from_user.id)
-                return await message.answer("Выберите категорию товаров", reply_markup=rkb_markup)
-            
-            if message.text not in self.cache_categories and message.text not in self.cache_sub_categories and message.text not in self.message_exceptions and not message.contact:
-                return await self._notify_admins_tg(message)
-            
-            if message.text in self.cache_categories:
-                category: models.Category = await uow.categories.get_one_by(name=message.text)
-                await self.paginate_products(
-                    message=message,
-                    category_id=category.id,
-                )
+    async def get_products(self, message: Message, uow: UnitOfWork) -> None:
+        if not self.cache_categories or not self.cache_sub_categories:
+            self.cache_categories = [category.name for category in await uow.categories.get_all_without_pagination()]
+            self.cache_sub_categories = [sub_category.name for sub_category in await uow.sub_categories.get_all_without_pagination()]
+        if message.text == "Назад":
+            rkb_markup = await rkbs_handler.get_welcome_rkbs(message.from_user.id)
+            return await message.answer("Выберите категорию товаров", reply_markup=rkb_markup)
+        
+        if message.text not in self.cache_categories and message.text not in self.cache_sub_categories and message.text not in self.message_exceptions and not message.contact:
+            return await self._notify_admins_tg(message, uow)
+        
+        if message.text in self.cache_categories:
+            category: models.Category = await uow.categories.get_one_by(name=message.text)
+            await self.paginate_products(
+                uow=uow,
+                message=message,
+                category_id=category.id,
+            )
 
-            elif message.text in self.cache_sub_categories:
-                sub_category: models.SubCategory = await uow.sub_categories.get_one_by(name=message.text)
-                
-                await self.paginate_products(
-                    message=message,
-                    sub_category_id=sub_category.id
-                )
+        elif message.text in self.cache_sub_categories:
+            sub_category: models.SubCategory = await uow.sub_categories.get_one_by(name=message.text)
+            
+            await self.paginate_products(
+                uow=uow,
+                message=message,
+                sub_category_id=sub_category.id
+            )
 
        
 
@@ -66,6 +67,7 @@ class ProductsService:
            
     async def paginate_products(
             self,
+            uow: UnitOfWork,
             message: Message = None,
             query: CallbackQuery = None,
             category_id: int = None,
@@ -74,7 +76,6 @@ class ProductsService:
             sort_by: str = SorterBtnNames.DEFAULT.name,
             brand_name: str = "Все"
     ) -> None:
-        async with uow:
             if category_id:
                 products: list[models.Product] = await uow.products.get_all_by(category_id=category_id, status_id=settings.PUBLISHED_STATUS_ID)
 
@@ -163,10 +164,10 @@ class ProductsService:
             await message.answer_photo(photo_url, caption_text, reply_markup=ikb_markup, parse_mode="HTML")
     async def change_brand(
             self, 
+            uow: UnitOfWork,
             query: CallbackQuery,
             callback_data: ChangeBrandCallBackData,
     ):
-        # async with uow:
             if callback_data.category_id:
                  products: list[models.Product] = await uow.products.get_all_by(category_id=callback_data.category_id, status_id=settings.PUBLISHED_STATUS_ID)
 

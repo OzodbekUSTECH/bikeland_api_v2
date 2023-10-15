@@ -3,12 +3,14 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from telegram.services import welcome_service
 from telegram.states import WelcomeStates
+from database import UnitOfWork
 
 router = Router()
 
 @router.message(F.text == "/start")
-async def ask_for_contacts(message: Message, state: FSMContext):
-    await welcome_service.ask_for_contacts(message, state)
+async def ask_for_contacts(message: Message, state: FSMContext, uow = UnitOfWork()):
+    async with uow:
+        await welcome_service.ask_for_contacts(message, state, uow)
 
 # @router.message(F.photo)
 # async def get_test(message: Message):
@@ -16,6 +18,6 @@ async def ask_for_contacts(message: Message, state: FSMContext):
 
 
 @router.message(WelcomeStates.contact)
-async def register_client(message: Message, state: FSMContext) -> None:
+async def register_client(message: Message, state: FSMContext, uow = UnitOfWork()) -> None:
     
-    await welcome_service.register_tg_client(message, state)
+    await welcome_service.register_tg_client(message, state, uow)
