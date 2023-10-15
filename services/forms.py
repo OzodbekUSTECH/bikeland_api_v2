@@ -72,21 +72,21 @@ class FormsService:
         async with uow:
             bc_widget = await uow.back_call_widgets.create(bc_data.model_dump())
             await uow.commit()
-            await self._inform_tg_admins(bc_widget=bc_widget)
+            await self._inform_tg_admins(uow, bc_widget=bc_widget)
             return bc_widget
         
     async def create_bc_form(self,uow, bc_data: CreateBackCallFormSchema) -> models.BackCallForm:
         async with uow:
             bc_form = await uow.back_call_forms.create(bc_data.model_dump())
             await uow.commit()
-            await self._inform_tg_admins(bc_form=bc_form)
+            await self._inform_tg_admins(uow, bc_form=bc_form)
             return bc_form
         
     async def create_wwu_form(self,uow, wwu_data: CreateWorkWithUsFormSchema) -> models.WorkWithUsForm:
         async with uow:
             wwu_form = await uow.work_with_us_forms.create(wwu_data.model_dump())
             await uow.commit()
-            await self._inform_tg_admins(wwu_form=wwu_form)
+            await self._inform_tg_admins(uow, wwu_form=wwu_form)
             return wwu_form
         
     async def get_bc_widgets(self,  uow,):

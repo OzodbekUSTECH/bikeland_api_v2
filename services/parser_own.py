@@ -1,16 +1,16 @@
 from schemas.products import CreateProductMediaGroup
 from schemas.blogs import CreateBlogMediaGroup
 import models
-from database import uow
 from utils.parser_2 import ParserHandlerSecond
 from utils.parser import ParserHandler
 from utils.media_handler import MediaHandler
 from config_bot import send_message_to_tg_admins, bot
 from services import products_service
+from database import UnitOfWork
 
 class ParserService:
 
-    async def parse_own_products(self):
+    async def parse_own_products(self, uow):
         async with uow:
             products = await ParserHandlerSecond.get_all_data_by_url(ParserHandlerSecond.products_url)
 
@@ -30,7 +30,7 @@ class ParserService:
                             
             await uow.commit()
 
-    async def parse_own_blogs(self):
+    async def parse_own_blogs(self, uow):
         async with uow:
             blogs = await ParserHandlerSecond.get_all_data_by_url(ParserHandlerSecond.blogs_url)
             for blog in blogs:
@@ -49,7 +49,7 @@ class ParserService:
 
             await uow.commit()
 
-    async def parse_own_categories(self):
+    async def parse_own_categories(self, uow):
         async with uow:
             categories = await ParserHandlerSecond.get_all_data_by_url(ParserHandlerSecond.categories_url)
         
@@ -59,7 +59,7 @@ class ParserService:
 
             await uow.commit()
 
-    async def parse_own_sub_categories(self):
+    async def parse_own_sub_categories(self, uow):
         async with uow:
             sub_categories = await ParserHandlerSecond.get_all_data_by_url(ParserHandlerSecond.sub_categories_url)
             for sub_category in sub_categories:
@@ -68,7 +68,7 @@ class ParserService:
 
             await uow.commit()
 
-    async def parse_own_brands(self):
+    async def parse_own_brands(self, uow):
         async with uow:
             brands = await ParserHandlerSecond.get_all_data_by_url(ParserHandlerSecond.brands_url)
             for brand in brands:
@@ -78,7 +78,7 @@ class ParserService:
             await uow.commit()
 
 
-    async def change_the_order_of_photos(self):
+    async def change_the_order_of_photos(self, uow):
         async with uow:
             main_products: list[models.Product] = await uow.products.get_all_without_pagination()
             add_products: list[models.Product] = await uow.products.get_all_without_pagination()
@@ -89,9 +89,9 @@ class ParserService:
             await uow.commit()
 
     ############################################
-    async def check_products_from_1c(self):
+    async def check_products_from_1c(self, uow = UnitOfWork()):
         async with uow:
-            await products_service.create_products()
+            await products_service.create_products(uow)
             products = await uow.products.get_all_without_pagination()
             their_products = await ParserHandler.get_filtered_products()
             for product1 in products:
@@ -109,7 +109,8 @@ class ParserService:
                             updated_product: models.Product = await uow.products.update(product1.id, product_dict)
                             if updated_product.quantity < updated_product.min_quantity:
                                 await self.inform_user_about_quantity_of_product(updated_product)
-
+            await uow.commit()
+            
     async def inform_user_about_quantity_of_product(self, product: models.Product):
         
             

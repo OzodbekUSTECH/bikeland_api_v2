@@ -30,7 +30,6 @@ app.add_middleware(
 
 
 import services
-
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 @app.on_event("startup")
 async def startup_event():
