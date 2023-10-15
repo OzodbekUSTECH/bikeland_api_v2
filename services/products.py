@@ -81,8 +81,8 @@ class ProductsService:
             # filtered_products: list[models.Product] = await filter_params.get_filtered_items(products)
             # filtered_products = await filter_params.sort_products(filtered_products)
 
-            # if filter_params.with_pagination:
-            #     return paginate(products, pagination)
+            if filter_params.with_pagination:
+                return paginate(products, pagination)
             return products
         
     async def get_product_by_id(self,uow, id: int) -> models.Product:

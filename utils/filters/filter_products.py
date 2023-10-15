@@ -122,9 +122,9 @@ class FilterProductsParams(BaseFilterParams):
         if self.dealer_id is not None:
             filter_dict['dealer_id'] = self.dealer_id
 
-        if self.title is not None:
-            # Add fuzzy matching if needed
-            filter_dict['title'] = self.title.lower()
+        # if self.title is not None:
+        #     # Add fuzzy matching if needed
+        #     filter_dict['title'] = self.title.lower()
 
         if self.status_id is not None:
             filter_dict['status_id'] = self.status_id
