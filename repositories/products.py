@@ -12,7 +12,9 @@ class ProductsRepository(BaseRepository):
 
         # Build the filter conditions based on the parameters in FilterProductsParams
         filters = []
-
+        if params.key is not None:
+            filters.append(self.model.key == params.key)
+            
         if params.category_id is not None:
             filters.append(self.model.category_id == params.category_id)
 

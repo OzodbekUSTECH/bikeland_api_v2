@@ -7,6 +7,7 @@ from utils.filters.base import BaseFilterParams
 class FilterProductsParams(BaseFilterParams):
     def __init__(
             self,
+            key: str = Query(None),
             category_id: int = Query(None),
             sub_category_id: int = Query(None),
             dealer_id: int = Query(None),
@@ -24,6 +25,7 @@ class FilterProductsParams(BaseFilterParams):
 
             with_pagination: bool = Query(False),
     ):
+        self.key = key
         self.category_id = category_id
         self.sub_category_id = sub_category_id
         self.dealer_id = dealer_id
