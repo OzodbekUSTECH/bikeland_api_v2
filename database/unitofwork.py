@@ -39,6 +39,9 @@ class UnitOfWork:
 
     statistics_of_views: Type[repositories.StatisticsOfViewsRepository]
     statistics_of_orders: Type[repositories.StatisticsOfOrdersRepository]
+
+    product_options: Type[repositories.ProductOptionsRepository]
+    
   
     def __init__(self):
         self.session_factory = session_maker
@@ -77,7 +80,7 @@ class UnitOfWork:
         self.statistics_of_views = repositories.StatisticsOfViewsRepository(self.session, model=models.StatisticOfViews)
         self.statistics_of_orders = repositories.StatisticsOfOrdersRepository(self.session, model=models.StatisticOfOrders)
 
-      
+        self.product_options = repositories.ProductOptionsRepository(self.session, model=models.ProductOption)
     async def __aexit__(self, *args):     
         await self.session.close()
 

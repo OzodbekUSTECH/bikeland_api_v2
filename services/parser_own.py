@@ -113,11 +113,13 @@ class ParserService:
             
     async def inform_user_about_quantity_of_product(self, product: models.Product):
         
-            
+            min_quantity = product.min_quantity if product.min_quantity else 0
             message_text = (
                 f"Здравствуйте {product.dealer.full_name}. Вас приветствует администратор Bikeland.Uz\n"
                 f"Ваш товар: {product.title}\n"
                 f"Осталось на складе: {product.quantity}\n"
+                f"Минимальное кол-во: {min_quantity}\n"
+                f"необходимое кол-во пополнить: {min_quantity - product.quantity}\n"
                 f"Для стабильного потока продаж необходимо пополнить склад товаром {product.title}"
             )
             if product.dealer.telegram_id:

@@ -59,6 +59,7 @@ from schemas.statuses import StatusSchema
 from schemas.sub_categories import SubCategorySchema
 from schemas.brands import BrandSchema
 from schemas.dealers import DealerSchema
+from schemas.product_options import ProductOptionSchema
 
 class ProductSchema(IdResponseSchema, CreateProductSchema, UpdateProductSchema):
     photos: list[ProductMediaGroup]
@@ -67,6 +68,7 @@ class ProductSchema(IdResponseSchema, CreateProductSchema, UpdateProductSchema):
     category: CustomCategorySchema | None
     sub_category: SubCategorySchema | None
     brand: BrandSchema | None
+    options: list[ProductOptionSchema]
 
     dealer_id: int | None = Field(exclude=True)
     category_id: int | None = Field(exclude=True)

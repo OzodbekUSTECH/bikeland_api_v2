@@ -10,7 +10,8 @@ if TYPE_CHECKING:
         SubCategory,
         Status,
         Brand,
-        Dealer
+        Dealer,
+        ProductOption
     )
 
 
@@ -76,6 +77,8 @@ class Product(BaseTable):
     category: Mapped["Category"] = relationship(lazy="subquery")
     sub_category: Mapped["SubCategory"] = relationship(lazy="subquery")
     brand: Mapped["Brand"] = relationship(lazy="subquery")
+
+    options: Mapped[list["ProductOption"]] = relationship(lazy="subquery")
 
     async def increase_view(self):
         self.amount_views += 1

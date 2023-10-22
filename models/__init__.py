@@ -27,4 +27,6 @@ from models.tg_clients import TgClient
 
 from models.statistics import StatisticOfViews, StatisticOfOrders
 
+from models.product_options import ProductOption
+
 
