@@ -16,7 +16,7 @@ class OrdersService:
     async def create_order(self,uow, order_data: CreateOrderSchema) -> models.Order:
         order_dict = order_data.model_dump()
         async with uow:
-            tgclient = await self._create_or_get_tg_client(order_data.phone_number)
+            tgclient = await self._create_or_get_tg_client(uow, order_data.phone_number)
             order_dict["tgclient_id"] = tgclient.id
             order = await uow.orders.create(order_dict)
             await forms_service._inform_tg_admins(order=order)
