@@ -29,4 +29,5 @@ from models.statistics import StatisticOfViews, StatisticOfOrders
 
 from models.product_options import ProductOption
 
+from models.waiting_lists import WaitingList
 

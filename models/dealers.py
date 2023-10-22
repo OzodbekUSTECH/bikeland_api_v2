@@ -4,6 +4,8 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.hybrid import hybrid_property
 from typing import TYPE_CHECKING
 from config import settings
+if TYPE_CHECKING:
+    from models import WaitingList
     
 class Dealer(BaseTable):
     __tablename__ = 'dealers'
@@ -19,3 +21,5 @@ class Dealer(BaseTable):
             return f"{settings.DEALER_MEDIA_URL}{self.filename}"
         else:
             return None
+        
+    waiting_list: Mapped[list["WaitingList"]] = relationship(lazy="subquery")

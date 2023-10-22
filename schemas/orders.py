@@ -17,6 +17,7 @@ class CreateCustomOrderBasketSchema(CreateOrderBasketSchema):
 
 class OrderBasketSchema(IdResponseSchema, CreateOrderBasketSchema):
     title_of_product: str
+    key_of_product: str
     type_of_product: str | None
     price: float
     price_with_options: float | None

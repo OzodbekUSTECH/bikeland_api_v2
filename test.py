@@ -40,7 +40,7 @@
 # scheduler.add_job(services.parser_service.check_products_from_1c, 'cron', hour=6, minute=1)
 # scheduler.start()
 
-# asyncio.get_event_loop().run_forever()
+
 
 # # from services import products_service
 
@@ -78,3 +78,8 @@
 
 # # if __name__ == "__main__":
 # #     asyncio.run(main())
+
+# from services import parser_service
+# import asyncio
+
+# asyncio.run(parser_service.check_products_from_1c())

@@ -76,6 +76,10 @@ class OrderBasket(BaseTable):
         return self.product.title
     
     @hybrid_property
+    def key_of_product(self) -> str:
+        return self.product.key
+    
+    @hybrid_property
     def type_of_product(self) -> str | None:
         if self.product.sub_category_id:
             return self.product.sub_category.name

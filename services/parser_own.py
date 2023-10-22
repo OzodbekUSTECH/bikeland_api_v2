@@ -1,5 +1,6 @@
 from schemas.products import CreateProductMediaGroup
 from schemas.blogs import CreateBlogMediaGroup
+from schemas.waiting_lists import CreateWaitingListSchema
 import models
 from utils.parser_2 import ParserHandlerSecond
 from utils.parser import ParserHandler
@@ -89,9 +90,13 @@ class ParserService:
             await uow.commit()
 
     ############################################
-    async def check_products_from_1c(self, uow = UnitOfWork()):
+    async def check_products_from_1c(self):
+        uow = UnitOfWork()
+        await products_service.create_products()
+
         async with uow:
-            await products_service.create_products(uow)
+            waiting_dealers_id = []
+
             products = await uow.products.get_all_without_pagination()
             their_products = await ParserHandler.get_filtered_products()
             for product1 in products:
@@ -107,30 +112,54 @@ class ParserService:
                             
                             product_dict = await ParserHandler.create_product_dict(product2)
                             updated_product: models.Product = await uow.products.update(product1.id, product_dict)
-                            if updated_product.quantity < updated_product.min_quantity:
-                                await self.inform_user_about_quantity_of_product(updated_product)
-            await uow.commit()
+                            if updated_product.quantity >= updated_product.min_quantity:
+                                product_in_waiting_list: models.WaitingList = await uow.waiting_lists.get_one_by(product_id=updated_product.id)
+                                if product_in_waiting_list:
+                                    await uow.waiting_lists.delete(product_in_waiting_list.id)
+                            elif updated_product.quantity < updated_product.min_quantity:
+                                # await self.inform_user_about_quantity_of_product(updated_product)
+                                waiting_dealers_id.append(updated_product.dealer_id)
+                                if updated_product.dealer_id:
+                                    waiting_list_dict = CreateWaitingListSchema(
+                                        dealer_id=updated_product.dealer_id,
+                                        product_id=updated_product.id
+                                    ).model_dump()
+                                    await uow.waiting_lists.create(waiting_list_dict)
             
-    async def inform_user_about_quantity_of_product(self, product: models.Product):
+            await uow.commit()
+        if waiting_list_dict:
+            await self.inform_user_about_quantity_of_product(waiting_dealers_id)
         
-            min_quantity = product.min_quantity if product.min_quantity else 0
-            message_text = (
-                f"Здравствуйте {product.dealer.full_name}. Вас приветствует администратор Bikeland.Uz\n"
-                f"Ваш товар: {product.title}\n"
-                f"Осталось на складе: {product.quantity}\n"
-                f"Минимальное кол-во: {min_quantity}\n"
-                f"необходимое кол-во пополнить: {min_quantity - product.quantity}\n"
-                f"Для стабильного потока продаж необходимо пополнить склад товаром {product.title}"
-            )
-            if product.dealer.telegram_id:
-                await bot.send_message(chat_id=product.dealer.telegram_id, text=message_text)
-            else:
-                message_notification = (
-                    f"Дилер {product.dealer.full_name} не зарегистрирован в боте и не может получать уведомления.\n"
-                    f"Номер телефона дилера: {product.dealer.phone_number}\n"
-                    "Для правильной работы уведомлений дилер должен перейти в бота @BikelandUz_bot и отправить свой контакт"
-                )
-                await send_message_to_tg_admins(message_notification)
+            
+    async def inform_user_about_quantity_of_product(self, dealers_id: list[int]):
+            uow = UnitOfWork()
+            async with uow:
+                for dealer_id in dealers_id:
+                    dealer: models.Dealer = await uow.dealers.get_by_id(dealer_id)
+
+                    products_data = ""
+                    for product in dealer.waiting_list:
+                        products_data += (
+                            f"Название товара: {product.title_of_product}\n"
+                            f"Осталось на складе: {product.quantity}\n"
+                            f"Минимальное кол-во: {product.min_quantity}\n"
+                            f"Необходимое кол-во пополнить: {product.required_quantity}\n\n"
+                        )    
+                    
+                    message_text = (
+                        f"Здравствуйте {dealer.full_name}. Вас приветствует администратор Bikeland.Uz\n"
+                        f"{products_data}"
+                        f"Для стабильного потока продаж необходимо пополнить склад!"
+                    )
+                    if dealer.telegram_id:
+                        await bot.send_message(chat_id=dealer.telegram_id, text=message_text)
+                    else:
+                        message_notification = (
+                            f"Дилер {dealer.full_name} не зарегистрирован в боте и не может получать уведомления.\n"
+                            f"Номер телефона дилера: {dealer.phone_number}\n"
+                            "Для правильной работы уведомлений дилер должен перейти в бота @BikelandUz_bot и отправить свой контакт"
+                        )
+                        await send_message_to_tg_admins(message_notification)
                 
 parser_service = ParserService()
 

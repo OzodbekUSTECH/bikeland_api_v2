@@ -37,7 +37,6 @@ class ParserHandler:
 
         # Преобразуем словарь в список значений
         filtered_product_list = list(filtered_products.values())
-        print(filtered_product_list)
         return filtered_product_list
     
 

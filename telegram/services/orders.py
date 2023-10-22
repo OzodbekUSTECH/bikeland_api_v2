@@ -137,6 +137,7 @@ class OrdersService:
 
             product_data += (
                 f"- Название товара: {basket.title_of_product}\n"
+                f"- Артикул товара: {basket.key_of_product}\n"
                 f"{type_of_product}"
                 f"- Количество: {basket.quantity}\n"
                 f"- Цена: {basket.price:,}".replace(',', ' ') + " сум\n"

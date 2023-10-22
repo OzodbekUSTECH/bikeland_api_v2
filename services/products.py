@@ -6,7 +6,7 @@ from fastapi import UploadFile
 from config import settings
 from utils.filters.filter_products import FilterProductsParams
 from repositories import paginate, pagination_params
-
+from database import UnitOfWork
 class ProductsService:
     
     # async def duplicates(self) -> None:
@@ -32,8 +32,9 @@ class ProductsService:
             
     #         print("Повторяющиеся titles:", duplicate_titles)
 
-    async def create_products(self, uow) -> None:
-        # async with uow:
+    async def create_products(self) -> None:
+        uow = UnitOfWork()
+        async with uow:
             our_products = await uow.products.get_all_without_pagination()
             filtered_products: list[dict] = await ParserHandler.get_filtered_products()
             if len(our_products) != len(filtered_products):
@@ -50,7 +51,7 @@ class ProductsService:
                         data_list.append(product_dict)
 
                 await uow.products.bulk_create(data_list)
-                # await uow.commit()
+                await uow.commit()
 
     async def create_media_group(self,uow, product_id: int, media_group: list[UploadFile]) -> None:
         filenames = await MediaHandler.save_media(media_group, MediaHandler.products_media_dir)

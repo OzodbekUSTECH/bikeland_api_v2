@@ -26,7 +26,7 @@ class CreateProductSchema(CreateBaseModel):
 
 class UpdateProductSchema(UpdateBaseModel):
     description: str | None
-    min_quantity: int | None
+    min_quantity: int 
     video_link: str | None
     tag: str | None
     weight: str | None

@@ -31,7 +31,7 @@ class Product(BaseTable):
     title: Mapped[str]
     description: Mapped[str | None]
     quantity: Mapped[int]
-    min_quantity: Mapped[int | None] = mapped_column(default=0, server_default="0")
+    min_quantity: Mapped[int] = mapped_column(default=0, server_default="0")
     key: Mapped[str]
     uzb_price: Mapped[int] = mapped_column(BigInteger)
     usd_price: Mapped[int] = mapped_column(BigInteger)

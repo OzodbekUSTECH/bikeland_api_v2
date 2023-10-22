@@ -35,13 +35,15 @@ class UnitOfWork:
 
     orders: Type[repositories.OrdersRepository]
     orders_basket: Type[repositories.OrdersBasketRepository]
-    
+
     tgclients: Type[repositories.TgClientsRepository]
 
     statistics_of_views: Type[repositories.StatisticsOfViewsRepository]
     statistics_of_orders: Type[repositories.StatisticsOfOrdersRepository]
 
     product_options: Type[repositories.ProductOptionsRepository]
+
+    waiting_lists: Type[repositories.WaitingListsRepository]
     
   
     def __init__(self):
@@ -83,6 +85,9 @@ class UnitOfWork:
         self.statistics_of_orders = repositories.StatisticsOfOrdersRepository(self.session, model=models.StatisticOfOrders)
 
         self.product_options = repositories.ProductOptionsRepository(self.session, model=models.ProductOption)
+
+        self.waiting_lists = repositories.WaitingListsRepository(self.session, model=models.WaitingList)
+
     async def __aexit__(self, *args):     
         await self.session.close()
 
@@ -92,6 +97,7 @@ class UnitOfWork:
     async def rollback(self):
         await self.session.rollback()
 
+    
     
 
 uow = UnitOfWork()
