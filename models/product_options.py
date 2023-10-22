@@ -7,4 +7,4 @@ class ProductOption(BaseTable):
 
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
     name: Mapped[str]
-    price: Mapped[float]
+    price: Mapped[int]

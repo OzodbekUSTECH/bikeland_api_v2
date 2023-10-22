@@ -34,7 +34,8 @@ class UnitOfWork:
     product_media_groups: Type[repositories.ProductMediaGroupsRepository]
 
     orders: Type[repositories.OrdersRepository]
-
+    orders_basket: Type[repositories.OrdersBasketRepository]
+    
     tgclients: Type[repositories.TgClientsRepository]
 
     statistics_of_views: Type[repositories.StatisticsOfViewsRepository]
@@ -74,6 +75,7 @@ class UnitOfWork:
         self.product_media_groups = repositories.ProductMediaGroupsRepository(self.session, model=models.ProductMediaGroup)
 
         self.orders = repositories.OrdersRepository(self.session, model=models.Order)
+        self.orders_basket = repositories.OrdersBasketRepository(self.session, model=models.OrderBasket)
 
         self.tgclients = repositories.TgClientsRepository(self.session, model=models.TgClient)
 

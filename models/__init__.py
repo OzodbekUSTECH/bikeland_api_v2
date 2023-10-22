@@ -21,7 +21,7 @@ from models.forms import BackCallWidget, BackCallForm, WorkWithUsForm
 from models.products import Product, ProductMediaGroup
 
 
-from models.orders import Order
+from models.orders import Order, OrderBasket
 
 from models.tg_clients import TgClient
 

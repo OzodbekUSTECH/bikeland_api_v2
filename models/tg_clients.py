@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy.ext.hybrid import hybrid_property
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from models import Order
+    from models import Order, OrderBasket
 
 class TgClient(BaseTable):
     __tablename__ = 'tgclients'
@@ -14,6 +14,6 @@ class TgClient(BaseTable):
     username: Mapped[str | None]
     phone_number: Mapped[str]
 
-    orders: Mapped[list["Order"]] = relationship(lazy="subquery")
+    orders: Mapped[list["OrderBasket"]] = relationship(lazy="subquery")
 
     

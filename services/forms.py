@@ -42,28 +42,47 @@ class FormsService:
                 f"Узнал от/из: {wwu_form.known_from}"
             )
 
+        
+            
         elif order is not None:
+            product_data = ""
+            
+            for basket in order.basket:
+                type_of_product = f"- Тип техники: {basket.type_of_product}\n" if basket.type_of_product else ""
+                price_with_options = f"- Цена с опциями: {basket.price_with_options}\n" if basket.price_with_options else "\n"
+                options_data = "Опции: \n" if basket.options else ""
+                if basket.options:
+                    for option in basket.options:
+                        options_data += (
+                            f"- Название: {option.name}\n"
+                            f"- Цена: {option.price:,}".replace(',', ' ') + " сум\n"  
+                        )
+
+                product_data += (
+                    f"- Название товара: {basket.title_of_product}\n"
+                    f"{type_of_product}"
+                    f"- Количество: {basket.quantity}\n"
+                    f"- Цена: {basket.price:,}".replace(',', ' ') + " сум\n"
+                    f"{price_with_options}"
+                    f"{options_data}"
+                    f"\n"
+                )
+
             message_text = (
                 "Заказ из Bikeland.uz\n"
                 f"Дата: {order.created_at}\n"
                 f"ID/Номер заказа: {order.id}\n"
                 f"Имя: {order.name}\n"
-                f"Номер телефона: {order.phone_number}\n"   
-                f"Название товара: {order.product.title}\n"
-                f"Количество: {order.quantity}\n"
-                f"Цена:  {order.price:,}".replace(',', ' ') + " сум\n"
-                f"Регион {order.region}\n"   
+                f"Номер телефона: {order.phone_number}\n"  
+                f"Регион: {order.region}\n" 
+                f"Заказы: \n"  
+                f"{product_data}"
+                # f"Название товара: {order.basket.title_of_product}\n"
+                # f"Количество: {order.quantity}\n"
+                f"Цена всего:  {order.total_price:,}".replace(',', ' ') + " сум"
             )
-            product: models.Product = await uow.products.get_by_id(order.product_id)
-            if product.sub_category:
-                message_text +=(
-                    f"Категория: {product.sub_category.name}"
-                )
-            elif product.category:
-                message_text +=(
-                    f"Категория: {product.category.name}"
-                )
-
+            
+            
         if message_text:
             await send_message_to_tg_admins(message_text)
 

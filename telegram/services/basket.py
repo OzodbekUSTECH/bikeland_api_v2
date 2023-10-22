@@ -25,7 +25,7 @@ class BasketService:
             
                    
             client: models.TgClient = await uow.tgclients.get_one_by(telegram_id=telegram_id)
-            orders: list[models.Order] = client.orders
+            orders: list[models.OrderBasket] = client.orders
             if not orders:
                 return await message.answer("Пока вы ничего не заказали. Чтобы выбрать технику перейдите в каталог")
             sort_key = lambda order: order.id
@@ -41,7 +41,7 @@ class BasketService:
             elif current_page == 0:
                 current_page = total_pages
 
-            order: models.Order = orders[current_page - 1]
+            order: models.OrderBasket = orders[current_page - 1]
             product = order.product
 
             ikb_markup = await ikbs_handler.get_basket_pagination_ikbs(
@@ -61,7 +61,7 @@ class BasketService:
 
     async def _show_product(
             self,
-            order: models.Order,
+            order: models.OrderBasket,
             product: models.Product,
             ikb_markup: InlineKeyboardMarkup,
             message: Message = None,
@@ -73,13 +73,14 @@ class BasketService:
             
         #use 2 spaces to show space in tg
         caption_text = (
-            f"Номер заказа:  {order.id}\n"
+            f"Номер заказа:  {order.order.id}\n"
+            f"Номер корзины: {order.id}\n"
             f"Название товара:  {product.title}\n\n"
             f"Количество:  {order.quantity}\n"
             f"Цена:  {order.price:,}".replace(',', ' ') + " сум\n"            
-            f"Регион: {order.region}\n"
-            f"Номер телефона:  {order.phone_number}\n"
-            f"Имя:  {order.name}\n"
+            f"Регион: {order.order.region}\n"
+            f"Номер телефона:  {order.order.phone_number}\n"
+            f"Имя:  {order.order.name}\n"
             f"Дата заказа:  {order.created_at}\n"
             f"Наш канал: @BikelandUz"
         )

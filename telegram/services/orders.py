@@ -9,7 +9,8 @@ import re
 from config_bot import bot
 from config import settings
 from telegram.reply_kbs import rkbs_handler
-from schemas.orders import CreateOrderSchema
+from schemas.orders import CreateOrderSchema, CreateCustomOrderBasketSchema
+from config_bot import send_message_to_tg_admins
 
 class OrdersService:
 
@@ -94,16 +95,26 @@ class OrdersService:
         order_dict = CreateOrderSchema(
             name=name,
             phone_number=phone_number,
-            product_id=product_id,
-            quantity=quantity,
+            # product_id=product_id,
+            # quantity=quantity,
             region=region,
             known_from="Телеграм бот",
+            basket=[]
         ).model_dump()
         order_dict["source"] = "Телеграм бот"
-        order_dict["tgclient_id"] = tgclient.id
+        # order_dict["tgclient_id"] = tgclient.id
         
         order:models.Order = await uow.orders.create(order_dict)
+        basket_dict = CreateCustomOrderBasketSchema(
+            order_id=order.id,
+            product_id=product_id,
+            option_ids=None,
+            quantity=quantity,
+            tgclient_id=tgclient.id,
+        ).model_dump()
+        await uow.orders_basket.create(basket_dict)
         await uow.commit()
+        order = await uow.orders.get_by_id(order.id)
         await self.send_notification_to_admins_tg(order, uow)
              
         unpacked_data = (
@@ -120,33 +131,35 @@ class OrdersService:
 
 
     async def send_notification_to_admins_tg(self, order: models.Order, uow: UnitOfWork) -> None:
-        
+        product_data = ""
+        for basket in order.basket:
+            type_of_product = f"- Тип техники: {basket.type_of_product}\n" if basket.type_of_product else ""
+
+            product_data += (
+                f"- Название товара: {basket.title_of_product}\n"
+                f"{type_of_product}"
+                f"- Количество: {basket.quantity}\n"
+                f"- Цена: {basket.price:,}".replace(',', ' ') + " сум\n"
+                f"\n"
+            )
+
+
         message_text = (
                 f"Заказ из телеграм бота\n\n"
                 f"Дата время заказа: {order.created_at}\n"
                 f"ID/Номер заказа: {order.id}\n"
                 f"Имя: {order.name}\n"
                 f"Номер телефона: {order.phone_number}\n"
-                f"Название товара: {order.product.title}\n"
-                f"Количество: {order.quantity}\n"
-                f"Цена:  {order.price:,}".replace(',', ' ') + " сум\n"
+                # f"Название товара: {order.product.title}\n"
+                # f"Количество: {order.quantity}\n"
+                # f"Цена:  {order.price:,}".replace(',', ' ') + " сум\n"
                 f"Регион {order.region}\n"
+                f"{product_data}"
                 # f"Узнал от: {order.known_from}\n"
             )
-        product: models.Product = await uow.products.get_by_id(order.product_id)
-        if product.sub_category:
-            message_text +=(
-                f"Категория: {product.sub_category.name}"
-            )
-        elif product.category:
-            message_text +=(
-                f"Категория: {product.category.name}"
-            )
-            for admin_tg_id in settings.ADMIN_TG_IDS:
-                await bot.send_message(
-                        chat_id=admin_tg_id,
-                        text=message_text
-                    )   
+        
+        if message_text:
+            await send_message_to_tg_admins(message_text)
 
     async def cancel_ordering(self, message: Message, state: FSMContext) -> None:
         await state.clear()

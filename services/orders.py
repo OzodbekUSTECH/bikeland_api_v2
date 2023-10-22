@@ -1,6 +1,7 @@
-from schemas.orders import CreateOrderSchema
+from schemas.orders import CreateOrderSchema, CreateCustomOrderBasketSchema
 from schemas.tgclients import CreateTgClientSchema
 import models
+from database import UnitOfWork
 from services import forms_service
 class OrdersService:
 
@@ -13,14 +14,25 @@ class OrdersService:
         
         return tgclient
 
-    async def create_order(self,uow, order_data: CreateOrderSchema) -> models.Order:
+    async def create_order(self,uow: UnitOfWork, order_data: CreateOrderSchema) -> models.Order:
         order_dict = order_data.model_dump()
         async with uow:
             tgclient = await self._create_or_get_tg_client(uow, order_data.phone_number)
-            order_dict["tgclient_id"] = tgclient.id
-            order = await uow.orders.create(order_dict)
-            await forms_service._inform_tg_admins(uow, order=order)
+            order: models.Order = await uow.orders.create(order_dict)
+            await uow.orders_basket.bulk_create(
+                data_list=[CreateCustomOrderBasketSchema(
+                    order_id=order.id,
+                    product_id=data.product_id,
+                    quantity=data.quantity,
+                    option_ids=data.option_ids,
+                    tgclient_id= tgclient.id
+                ).model_dump() for data in order_data.basket]
+            )
             await uow.commit()
+
+            order = await uow.orders.get_by_id(order.id)
+            
+            await forms_service._inform_tg_admins(uow, order=order)
 
             return order
         
