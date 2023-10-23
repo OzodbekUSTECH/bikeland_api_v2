@@ -80,7 +80,9 @@ class OrdersService:
             "Ваш заказ принят, ожидайте. Скоро менеджер с вами свяжется\n\n"
             f"{readable_data}"
         )
-        ikbs = await rkbs_handler.get_welcome_rkbs(tg_id=message.from_user.id)
+        dealers: list[models.Dealer] = await uow.dealers.get_all_without_pagination()
+        dealers_tg_id = [dealer.telegram_id for dealer in dealers if dealer.telegram_id]
+        ikbs = await rkbs_handler.get_welcome_rkbs(tg_id=message.from_user.id, dealers_tg_id=dealers_tg_id)
         await message.answer(message_text, reply_markup=ikbs)
 
     async def _show_data(self, message: Message, data: dict, state: FSMContext, uow: UnitOfWork):
@@ -164,8 +166,13 @@ class OrdersService:
 
     async def cancel_ordering(self, message: Message, state: FSMContext) -> None:
         await state.clear()
-        ikbs = await rkbs_handler.get_welcome_rkbs(tg_id=message.from_user.id)
-        await message.answer("Оформление было отменено", reply_markup=ikbs)
+        uow = UnitOfWork()
+        async with uow:
+            dealers: list[models.Dealer] = await uow.dealers.get_all_without_pagination()
+            dealers_tg_id = [dealer.telegram_id for dealer in dealers if dealer.telegram_id]
+
+            ikbs = await rkbs_handler.get_welcome_rkbs(tg_id=message.from_user.id, dealers_tg_id=dealers_tg_id)
+            await message.answer("Оформление было отменено", reply_markup=ikbs)
 
 
 

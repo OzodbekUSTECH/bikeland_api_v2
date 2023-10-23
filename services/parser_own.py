@@ -140,10 +140,10 @@ class ParserService:
                     products_data = ""
                     for product in dealer.waiting_list:
                         products_data += (
-                            f"Название товара: {product.title_of_product}\n"
-                            f"Осталось на складе: {product.quantity}\n"
-                            f"Минимальное кол-во: {product.min_quantity}\n"
-                            f"Необходимое кол-во пополнить: {product.required_quantity}\n\n"
+                            f"- Название товара: {product.title_of_product}\n"
+                            f"- Осталось на складе: {product.quantity}\n"
+                            f"- Минимальное кол-во: {product.min_quantity}\n"
+                            f"- Необходимое кол-во пополнить: {product.required_quantity}\n\n"
                         )    
                     
                     message_text = (

@@ -7,8 +7,10 @@ import models
 from schemas.tgclients import CreateTgClientSchema, UpdateTgClientSchema
 class WelcomeService:
 
-    async def _say_welcome(self, message: Message) -> None:
-        rkb_markup = await rkbs_handler.get_welcome_rkbs(tg_id=message.from_user.id)
+    async def _say_welcome(self, uow: UnitOfWork, message: Message) -> None:
+        dealers: list[models.Dealer] = await uow.dealers.get_all_without_pagination()
+        dealers_tg_id = [dealer.telegram_id for dealer in dealers if dealer.telegram_id]
+        rkb_markup = await rkbs_handler.get_welcome_rkbs(tg_id=message.from_user.id, dealers_tg_id=dealers_tg_id)
         message_text = (
             "Добро пожаловать в BIKELAND bot,\n"
             f"{message.from_user.full_name}"
@@ -27,7 +29,7 @@ class WelcomeService:
                 await message.answer(message_text, reply_markup=rkb_markup)
             
             else:
-                await self._say_welcome(message)
+                await self._say_welcome(uow, message)
 
     async def _is_dealer(self, message: Message, uow: UnitOfWork) -> None:
         dealer: models.Dealer = await uow.dealers.get_one_by_phone_number(message.contact.phone_number)
@@ -60,7 +62,7 @@ class WelcomeService:
 
                 await uow.commit()
                 await state.clear()
-                await self._say_welcome(message)
+                await self._say_welcome(uow, message)
                     
                     
 

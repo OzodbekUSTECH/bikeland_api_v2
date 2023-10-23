@@ -20,8 +20,12 @@ class SenderService:
     async def save_post(self, message: Message, state: FSMContext):
         if message.text == "Отменить":
             await state.clear()
-            rkb_markup = await rkbs_handler.get_welcome_rkbs(tg_id=message.from_user.id)
-            await message.answer("Отменено", reply_markup=rkb_markup)
+            uow = UnitOfWork()
+            async with uow:
+                dealers: list[models.Dealer] = await uow.dealers.get_all_without_pagination()
+                dealers_tg_id = [dealer.telegram_id for dealer in dealers if dealer.telegram_id]
+                rkb_markup = await rkbs_handler.get_welcome_rkbs(tg_id=message.from_user.id, dealers_tg_id=dealers_tg_id)
+                await message.answer("Отменено", reply_markup=rkb_markup)
         else:
             if message.photo:
                 await state.update_data(photo=message.photo[-1].file_id, caption = message.caption)
@@ -41,7 +45,9 @@ class SenderService:
     async def send_or_cancel_sender(self, message: Message, state: FSMContext, uow: UnitOfWork):
         if message.text == "Отменить":
             await state.clear()
-            rkb_markup = await rkbs_handler.get_welcome_rkbs(tg_id=message.from_user.id)
+            dealers: list[models.Dealer] = await uow.dealers.get_all_without_pagination()
+            dealers_tg_id = [dealer.telegram_id for dealer in dealers if dealer.telegram_id]
+            rkb_markup = await rkbs_handler.get_welcome_rkbs(tg_id=message.from_user.id, dealers_tg_id=dealers_tg_id)
             await message.answer("Отменено", reply_markup=rkb_markup)
         else:
             data = await state.get_data()
@@ -57,8 +63,9 @@ class SenderService:
                         await bot.send_video(chat_id=client.telegram_id, video=video, caption=caption)
                     else:
                         await bot.send_message(chat_id=client.telegram_id, text=caption)
-
-            rkb_markup = await rkbs_handler.get_welcome_rkbs(message.from_user.id)
+            dealers: list[models.Dealer] = await uow.dealers.get_all_without_pagination()
+            dealers_tg_id = [dealer.telegram_id for dealer in dealers if dealer.telegram_id]
+            rkb_markup = await rkbs_handler.get_welcome_rkbs(message.from_user.id, dealers_tg_id)
             await message.answer("рассылка прошла успешно", reply_markup=rkb_markup)
             await state.clear()
 

@@ -16,7 +16,7 @@ class ReplyKeyboardsHandler:
                     
         return rkb_markup
     
-    async def get_welcome_rkbs(self, tg_id: int):
+    async def get_welcome_rkbs(self, tg_id: int, dealers_tg_id: list[int]):
         rkbs = [
             KeyboardButton(
                 text=f"{btn_name.value}", 
@@ -25,7 +25,10 @@ class ReplyKeyboardsHandler:
         ]
 
         if tg_id in settings.ADMIN_TG_IDS:
-            rkbs = rkbs + [KeyboardButton(text="Сделать рассылку")] 
+            rkbs = rkbs + [KeyboardButton(text="Сделать рассылку")]
+        
+        if tg_id in dealers_tg_id:
+            rkbs = rkbs + [KeyboardButton(text="Список товаров")]
         row = []
         for i in range(0, len(rkbs), 2):
             if i + 1 < len(rkbs):

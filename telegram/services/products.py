@@ -18,7 +18,7 @@ class ProductsService:
        
         self.cache_categories = []
         self.cache_sub_categories = []
-        self.message_exceptions = ["Назад", "Корзина", "/start", "Отменить", "Сделать рассылку"]
+        self.message_exceptions = ["Назад", "Корзина", "/start", "Отменить", "Сделать рассылку", "Список товаров"]
 
     async def _notify_admins_tg(self, message: Message, uow: UnitOfWork):
             telegram_client: models.TgClient = await uow.tgclients.get_one_by(telegram_id=message.from_user.id)
@@ -38,7 +38,9 @@ class ProductsService:
             self.cache_categories = [category.name for category in await uow.categories.get_all_without_pagination()]
             self.cache_sub_categories = [sub_category.name for sub_category in await uow.sub_categories.get_all_without_pagination()]
         if message.text == "Назад":
-            rkb_markup = await rkbs_handler.get_welcome_rkbs(message.from_user.id)
+            dealers: list[models.Dealer] = await uow.dealers.get_all_without_pagination()
+            dealers_tg_id = [dealer.telegram_id for dealer in dealers if dealer.telegram_id]
+            rkb_markup = await rkbs_handler.get_welcome_rkbs(message.from_user.id, dealers_tg_id)
             return await message.answer("Выберите категорию товаров", reply_markup=rkb_markup)
         
         if message.text not in self.cache_categories and message.text not in self.cache_sub_categories and message.text not in self.message_exceptions and not message.contact:
