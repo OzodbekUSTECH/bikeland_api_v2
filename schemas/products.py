@@ -70,7 +70,7 @@ class ProductSchema(IdResponseSchema, CreateProductSchema, UpdateProductSchema):
     photos: list[ProductMediaGroup]
     status: StatusSchema
     dealer: CustomDealerSchema | None
-    category: CustomCategorySchema | None
+    category: CustomCategorySchema | None   
     sub_category: SubCategorySchema | None
     brand: BrandSchema | None
     options: list[ProductOptionSchema]
