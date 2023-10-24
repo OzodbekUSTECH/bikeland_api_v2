@@ -1,6 +1,6 @@
 from schemas.products import CreateProductMediaGroup
 from schemas.blogs import CreateBlogMediaGroup
-from schemas.waiting_lists import CreateWaitingListSchema
+from schemas.waiting_lists import CreateWaitingListSchema, UpdateWaitingListSchema
 import models
 from utils.parser_2 import ParserHandlerSecond
 from utils.parser import ParserHandler
@@ -118,13 +118,22 @@ class ParserService:
                                     await uow.waiting_lists.delete(product_in_waiting_list.id)
                             elif updated_product.quantity < updated_product.min_quantity:
                                 # await self.inform_user_about_quantity_of_product(updated_product)
-                                waiting_dealers_id.append(updated_product.dealer_id)
                                 if updated_product.dealer_id:
-                                    waiting_list_dict = CreateWaitingListSchema(
-                                        dealer_id=updated_product.dealer_id,
-                                        product_id=updated_product.id
-                                    ).model_dump()
-                                    await uow.waiting_lists.create(waiting_list_dict)
+                                    waiting_dealers_id.append(updated_product.dealer_id)
+
+                                    waiting_list_product = await uow.waiting_lists.get_one_by(product_id=updated_product.id)
+                                    if waiting_list_product:
+                                        waiting_list_dict = UpdateWaitingListSchema(
+                                            dealer_id=updated_product.dealer_id,
+                                            product_id=updated_product.id
+                                        ).model_dump()
+                                        await uow.waiting_lists.update(waiting_list_product.id, waiting_list_dict)
+                                    else:
+                                        waiting_list_dict = CreateWaitingListSchema(
+                                            dealer_id=updated_product.dealer_id,
+                                            product_id=updated_product.id
+                                        ).model_dump()
+                                        await uow.waiting_lists.create(waiting_list_dict)
             
             await uow.commit()
         if waiting_list_dict:

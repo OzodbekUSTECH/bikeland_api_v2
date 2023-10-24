@@ -4,7 +4,10 @@ class CreateWaitingListSchema(CreateBaseModel):
     dealer_id: int
     product_id: int
 
-class WaitingListSchema(IdResponseSchema, CreateWaitingListSchema):
+class UpdateWaitingListSchema(UpdateBaseModel, CreateWaitingListSchema):
+    pass
+
+class WaitingListSchema(IdResponseSchema, UpdateWaitingListSchema):
     title_of_product: str
     key_of_product: str
     quantity: int
