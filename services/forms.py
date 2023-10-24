@@ -49,7 +49,6 @@ class FormsService:
             
             for basket in order.basket:
                 type_of_product = f"- Тип техники: {basket.type_of_product}\n" if basket.type_of_product else ""
-                price_with_options = f"- Цена с опциями: {basket.price_with_options}\n" if basket.price_with_options else "\n"
                 options_data = "Опции: \n" if basket.options else ""
                 if basket.options:
                     for option in basket.options:
@@ -64,7 +63,6 @@ class FormsService:
                     f"{type_of_product}"
                     f"- Количество: {basket.quantity}\n"
                     f"- Цена: {basket.price:,}".replace(',', ' ') + " сум\n"
-                    f"{price_with_options}"
                     f"{options_data}"
                     f"\n"
                 )

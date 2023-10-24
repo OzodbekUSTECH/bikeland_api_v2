@@ -24,7 +24,7 @@ class Order(BaseTable):
         for product in self.basket:
             default_price += product.price
             if product.price_with_options:
-                default_price += product.price_with_options
+                default_price += product.price_of_options
         return default_price
 
     basket: Mapped[list["OrderBasket"]] = relationship(lazy="subquery", back_populates="order")
@@ -68,6 +68,15 @@ class OrderBasket(BaseTable):
     def price_with_options(self) -> int | None:
         if self.options:
             default_price = self.price
+            for option in self.options:
+                default_price += option.price
+            return default_price
+        return None
+    
+    @hybrid_property
+    def price_of_options(self) -> int | None:
+        if self.options:
+            default_price = 0
             for option in self.options:
                 default_price += option.price
             return default_price
