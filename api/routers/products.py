@@ -36,6 +36,18 @@ async def get_products(
 ):
     return await products_service.get_products(uow, filter_params, pagination)
 
+@router.get('/duplicates')
+async def get_duplicates(
+    uow: uow_dep,
+):
+    return await products_service.get_only_duplicates(uow)
+
+@router.delete('/delete/{id}')
+async def delete_product(
+        uow: uow_dep, id: int
+):
+    return await products_service.delete_product(uow, id)
+
 @router.get('/{id}', response_model=ProductSchema)
 async def get_product_by_id(uow: uow_dep, id: int):
     return await products_service.get_product_by_id(uow, id)

@@ -57,11 +57,11 @@ class BaseRepository:
 
     async def delete(self, id: int) -> dict:
         stmt = delete(self.model).where(self.model.id == id).returning(self.model)
-        try:
-            result = await self.session.execute(stmt)
-            return result.scalar_one()
-        except:
-            raise CustomException.forbidden("Нельзя удалить, из-за foreignkeys")
+        # try:
+        result = await self.session.execute(stmt)
+        return result.scalar_one()
+        # except:
+        #     raise CustomException.forbidden("Нельзя удалить, из-за foreignkeys")
 
 
     async def delete_by(self, **filters) -> dict:

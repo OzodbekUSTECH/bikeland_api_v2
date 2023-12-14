@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class ProductMediaGroup(BaseTable):
     __tablename__ = 'product_media_groups'
 
-    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
+    product_id: Mapped[int] = mapped_column(ForeignKey("products.id", ondelete="CASCADE"))
     filename: Mapped[str]
 
     @hybrid_property
@@ -71,7 +71,7 @@ class Product(BaseTable):
     
 
 
-    photos: Mapped[list["ProductMediaGroup"]] = relationship(lazy="subquery", order_by="desc(ProductMediaGroup.id)")
+    photos: Mapped[list["ProductMediaGroup"]] = relationship(lazy="subquery", order_by="desc(ProductMediaGroup.id)", cascade="all, delete-orphan")
     dealer: Mapped["Dealer"] = relationship(lazy="subquery")
     status: Mapped["Status"] = relationship(lazy="subquery")
     category: Mapped["Category"] = relationship(lazy="subquery")

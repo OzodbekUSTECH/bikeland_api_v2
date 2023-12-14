@@ -7,6 +7,9 @@ from config import settings
 from utils.filters.filter_products import FilterProductsParams
 from repositories import paginate, pagination_params
 from database import UnitOfWork
+from collections import Counter
+
+
 class ProductsService:
     
     # async def duplicates(self) -> None:
@@ -149,7 +152,24 @@ class ProductsService:
                             # await self.inform_user_about_quantity_of_product(updated_product)
 
     #########################################
-   
+    async def get_only_duplicates(self, uow: UnitOfWork):
+        async with uow:
+            products = await uow.products.get_all_without_pagination()
+
+            # Получаем Counter для подсчета количества вхождений каждого title
+            title_counter = Counter(product.title for product in products)
+
+            # Фильтруем только те продукты, у которых количество вхождений title больше 1
+            duplicate_products = [product for product in products if title_counter[product.title] > 1]
+            print(duplicate_products)
+            return duplicate_products
+        
+
+    async def delete_product(self, uow: UnitOfWork, id):
+        async with uow:
+            await uow.products.delete(id)
+
+            await uow.commit()
 
 
 
