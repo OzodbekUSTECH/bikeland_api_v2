@@ -35,11 +35,18 @@ class ProductsService:
             
     #         print("Повторяющиеся titles:", duplicate_titles)
 
+    async def get_product_1c_by_key(self, key):
+        products_1c = await ParserHandler.get_by_key(key)
+        return products_1c
+
+
     async def create_products(self) -> None:
         uow = UnitOfWork()
         async with uow:
             our_products = await uow.products.get_all_without_pagination()
             filtered_products: list[dict] = await ParserHandler.get_filtered_products()
+            # print(len(filtered_products))
+            # print(len(our_products))
             if len(our_products) != len(filtered_products):
                 data_list = []
                 for product in filtered_products:

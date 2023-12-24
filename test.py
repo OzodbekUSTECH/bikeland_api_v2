@@ -79,7 +79,9 @@
 # # if __name__ == "__main__":
 # #     asyncio.run(main())
 
-# from services import parser_service
-# import asyncio
+from services import products_service
+import asyncio
+from utils.parser import ParserHandler
 
-# asyncio.run(parser_service.check_products_from_1c())
+# asyncio.run(ParserHandler.get_by_key("5P6000009"))
+asyncio.run(products_service.create_products())

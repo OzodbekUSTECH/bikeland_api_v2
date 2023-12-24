@@ -138,6 +138,18 @@ class ParserService:
             await uow.commit()
         if waiting_list_dict:
             await self.inform_user_about_quantity_of_product(waiting_dealers_id)
+
+    async def auto_delete_product(self):
+        uow = UnitOfWork()
+        async with uow:
+            products = await uow.products.get_all_without_pagination()
+            for product in products:
+                their_product = await ParserHandler.get_by_key(product.key)
+                if not their_product:
+                    await uow.products.delete(product.id)
+            
+            await uow.commit()
+
         
             
     async def inform_user_about_quantity_of_product(self, dealers_id: list[int]):

@@ -42,6 +42,10 @@ async def get_duplicates(
 ):
     return await products_service.get_only_duplicates(uow)
 
+@router.get('/1c-db')
+async def get_by_key_in_1c_db(key: str):
+    return await products_service.get_product_1c_by_key(key)
+
 @router.delete('/delete/{id}')
 async def delete_product(
         uow: uow_dep, id: int

@@ -37,6 +37,7 @@ async def startup_event():
     
     scheduler = AsyncIOScheduler()
     scheduler.add_job(services.parser_service.check_products_from_1c, 'cron', hour = f"{settings.HOUR}", minute = f"{settings.MINUTE}")
+    scheduler.add_job(services.parser_service.auto_delete_product, 'cron', hour=3, minute=0)
     scheduler.start()
 
 

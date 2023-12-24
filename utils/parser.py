@@ -17,6 +17,16 @@ class ParserHandler:
             data = products["Data"]
             return data
     
+
+    @staticmethod
+    async def get_by_key(key: str):
+        async with httpx.AsyncClient(auth=(ParserHandler.username, ParserHandler.password)) as client:
+            all_products = await ParserHandler.get_all_1c_products()
+
+            # Найти продукт с заданным ключом
+            target_product = next((product for product in all_products if product.get("kod") == key), None)
+            return target_product
+
     @staticmethod
     async def get_filtered_products():
         products = await ParserHandler.get_all_1c_products()
