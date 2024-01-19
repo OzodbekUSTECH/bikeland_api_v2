@@ -21,9 +21,9 @@ async def create_product_video_link(
 ):
     return await product_video_links_service.create_product_video_link(uow, data)
 
-@router.get('/moving')
-async def move_solo_video_link_to_multiple_links(uow: uow_dep):
-    return await product_video_links_service.move_solo_video_link_to_multiple_links(uow)
+# @router.get('/moving')
+# async def move_solo_video_link_to_multiple_links(uow: uow_dep):
+#     return await product_video_links_service.move_solo_video_link_to_multiple_links(uow)
 
 @router.put('/{id}', response_model=IdResponseSchema)
 async def update_product_video_link(
