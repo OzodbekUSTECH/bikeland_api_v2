@@ -26,6 +26,7 @@ class ProductOptionsService:
         async with uow:
             option: models.ProductOption = await uow.product_options.get_by_id(id)
             await uow.product_options.update(option.id, option_data.model_dump())
+            await uow.commit()
             return option
         
     async def delete_product_option(self, uow: UnitOfWork, id: int) -> models.ProductOption:

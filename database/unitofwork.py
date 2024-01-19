@@ -42,6 +42,7 @@ class UnitOfWork:
     statistics_of_orders: Type[repositories.StatisticsOfOrdersRepository]
 
     product_options: Type[repositories.ProductOptionsRepository]
+    product_video_links: Type[repositories.ProductVideoLinksRepository]
 
     waiting_lists: Type[repositories.WaitingListsRepository]
     
@@ -85,6 +86,7 @@ class UnitOfWork:
         self.statistics_of_orders = repositories.StatisticsOfOrdersRepository(self.session, model=models.StatisticOfOrders)
 
         self.product_options = repositories.ProductOptionsRepository(self.session, model=models.ProductOption)
+        self.product_video_links = repositories.ProductVideoLinksRepository(self.session, model=models.ProductVideoLink)
 
         self.waiting_lists = repositories.WaitingListsRepository(self.session, model=models.WaitingList)
 

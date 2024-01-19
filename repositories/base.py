@@ -120,3 +120,10 @@ class BaseRepository:
         ).order_by(self.model.id)
         result = await self.session.execute(stmt)
         return result.scalars().all()
+
+
+
+    async def get_all_with_video_link(self) -> list:
+        stmt = select(self.model).filter(self.model.video_link != None)
+        result = await self.session.execute(stmt)
+        return result.scalars().all()

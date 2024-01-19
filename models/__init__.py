@@ -21,6 +21,7 @@ from models.forms import BackCallWidget, BackCallForm, WorkWithUsForm
 from models.products import Product, ProductMediaGroup
 
 
+
 from models.orders import Order, OrderBasket
 
 from models.tg_clients import TgClient
@@ -28,6 +29,8 @@ from models.tg_clients import TgClient
 from models.statistics import StatisticOfViews, StatisticOfOrders
 
 from models.product_options import ProductOption
+from models.product_video_links import ProductVideoLink
+
 
 from models.waiting_lists import WaitingList
 

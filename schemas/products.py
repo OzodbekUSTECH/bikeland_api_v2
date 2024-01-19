@@ -60,6 +60,7 @@ from schemas.sub_categories import SubCategorySchema
 from schemas.brands import BrandSchema
 from schemas.dealers import DealerSchema
 from schemas.product_options import ProductOptionSchema
+from schemas.product_video_links import ProductVideoLinkSchema
 from fastapi import UploadFile
 class CustomDealerSchema(IdResponseSchema):
     full_name: str
@@ -74,6 +75,7 @@ class ProductSchema(IdResponseSchema, CreateProductSchema, UpdateProductSchema):
     sub_category: SubCategorySchema | None
     brand: BrandSchema | None
     options: list[ProductOptionSchema]
+    video_links: list[ProductVideoLinkSchema]
 
     dealer_id: int | None = Field(exclude=True)
     category_id: int | None = Field(exclude=True)

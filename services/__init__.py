@@ -25,3 +25,4 @@ from services.orders import orders_service
 from services.statistics import statistics_service
 
 from services.product_options import product_options_service
+from services.product_video_links import product_video_links_service

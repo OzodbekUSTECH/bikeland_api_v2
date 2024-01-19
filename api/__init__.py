@@ -25,6 +25,7 @@ from api.routers.orders import router as orders_router
 from api.routers.statistics import router as statistics_router 
 
 from api.routers.product_options import router as product_options_router
+from api.routers.product_video_links import router as product_video_links_router
 
 all_routers = [
     # router_parser,
@@ -40,6 +41,7 @@ all_routers = [
 
     products_router,
     product_options_router,
+    product_video_links_router,
 
     #resource catalog
     contacts_router,

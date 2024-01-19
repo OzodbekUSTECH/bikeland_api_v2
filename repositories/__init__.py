@@ -28,5 +28,6 @@ from repositories.tgclients import TgClientsRepository
 from repositories.statistics import StatisticsOfOrdersRepository, StatisticsOfViewsRepository
 
 from repositories.product_options import ProductOptionsRepository
+from repositories.product_video_links import ProductVideoLinksRepository
 
 from repositories.waiting_lists import WaitingListsRepository
