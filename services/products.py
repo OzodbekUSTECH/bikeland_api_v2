@@ -94,7 +94,7 @@ class ProductsService:
 
             if filter_params.with_pagination:
                 return paginate(products, pagination)
-            return products
+            return products[:10]
         
     async def get_product_by_id(self,uow, id: int) -> models.Product:
         async with uow:

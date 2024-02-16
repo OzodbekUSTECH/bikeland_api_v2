@@ -7,6 +7,7 @@ from schemas.categories import (
     CategorySchema,
 )
 from schemas import IdResponseSchema
+from fastapi_cache.decorator import cache
 
 router = APIRouter(
     prefix="/categories",

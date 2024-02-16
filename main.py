@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from config import settings
 from fastapi_pagination import add_pagination
 from fastapi_pagination.utils import disable_installed_extensions_check
+from redis import asyncio as aioredis
 
 app = FastAPI(title="BIKELAND API")
 add_pagination(app)
@@ -30,9 +31,14 @@ app.add_middleware(
 
 
 import services
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 @app.on_event("startup")
 async def startup_event():
+    redis = aioredis.from_url("redis://bikeland_redis")
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     """func on start up project"""
     
     scheduler = AsyncIOScheduler()
