@@ -117,6 +117,11 @@ class ProductsService:
             product_dict["status_id"] = settings.ARCHIVED_STATUS_ID
         async with uow:
             product: models.Product = await uow.products.get_by_id(id)
+
+            if product_data.photos:
+                product.photos = product_data.photos
+
+            
             await uow.products.update(product.id, product_dict)
             await uow.commit()
             return product

@@ -55,6 +55,8 @@ class UpdateProductSchema(UpdateBaseModel):
     sub_category_id: int | None
     brand_id: int | None
 
+    photos: list | None = None
+
 from schemas.statuses import StatusSchema
 from schemas.sub_categories import SubCategorySchema
 from schemas.brands import BrandSchema
