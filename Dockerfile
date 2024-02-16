@@ -1,5 +1,5 @@
 # pull the official docker image
-FROM python:3.13.0a3-slim
+FROM python:3.12.2
 
 # Set the timezone to Asia/Tashkent
 ENV TZ=Asia/Tashkent
