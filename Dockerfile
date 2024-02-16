@@ -19,7 +19,8 @@ COPY . .
 RUN apt-get update && \
     apt-get install -y nginx && \
     rm -rf /etc/nginx/sites-enabled/default
-	@@ -29,4 +39,4 @@ COPY nginx.conf /etc/nginx/sites-enabled/
+
+# COPY nginx.conf /etc/nginx/sites-enabled/
 EXPOSE 80
 
 # Запускаем Nginx и Gunicorn для приложения FastAPI
