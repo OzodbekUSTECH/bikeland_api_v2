@@ -71,6 +71,7 @@ class CustomDealerSchema(IdResponseSchema):
 
 class ProductSchema(IdResponseSchema, CreateProductSchema, UpdateProductSchema):
     photos: list[ProductMediaGroup]
+    url: str
     status: StatusSchema
     dealer: CustomDealerSchema | None
     category: CustomCategorySchema | None   

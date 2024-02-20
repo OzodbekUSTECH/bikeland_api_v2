@@ -105,7 +105,7 @@ class ProductsService:
         
     async def update_product(
             self,
-            uow,
+            uow: UnitOfWork,
             is_to_publish: bool,
             id: int, 
             product_data: UpdateProductSchema
@@ -118,10 +118,6 @@ class ProductsService:
         async with uow:
             product: models.Product = await uow.products.get_by_id(id)
 
-            if product_data.photos:
-                product.photos = product_data.photos
-
-            
             await uow.products.update(product.id, product_dict)
             await uow.commit()
             return product
