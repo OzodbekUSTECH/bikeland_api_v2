@@ -30,10 +30,10 @@ class Product(BaseTable):
     __tablename__ = 'products'
 
     title: Mapped[str]
-    
+
     @hybrid_property
     def url(self):
-        return self.title.upper().replace(' ', 'b') + '_' + str(self.id)
+        return self.title.replace(' ', 'b') + '_' + str(self.id)
     
     description: Mapped[str | None]
     quantity: Mapped[int]
