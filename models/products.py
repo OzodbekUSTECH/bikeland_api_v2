@@ -77,7 +77,7 @@ class Product(BaseTable):
     
 
 
-    photos: Mapped[list["ProductMediaGroup"]] = relationship(lazy="subquery",  cascade="all, delete-orphan")
+    photos: Mapped[list["ProductMediaGroup"]] = relationship(lazy="subquery",  order_by="desc(ProductMediaGroup.id)", cascade="all, delete-orphan")
     dealer: Mapped["Dealer"] = relationship(lazy="subquery")
     status: Mapped["Status"] = relationship(lazy="subquery")
     category: Mapped["Category"] = relationship(lazy="subquery")
