@@ -33,7 +33,7 @@ class Product(BaseTable):
 
     @hybrid_property
     def url(self):
-        return self.title.replace(' ', 'b').replace('+', 'b').replace('"', 'b') + '_' + str(self.id)
+        return self.title.replace(' ', 'b').replace('+', 'b').replace('"', 'b').replace('/', 'b') + '_' + str(self.id)
     
     description: Mapped[str | None]
     quantity: Mapped[int]
