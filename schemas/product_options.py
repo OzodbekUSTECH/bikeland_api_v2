@@ -14,4 +14,4 @@ class UpdateProductOptionSchema(UpdateBaseModel, CreateProductOptionSchema):
     pass
 
 class ProductOptionSchema(IdResponseSchema, UpdateProductOptionSchema):
-    product_id: int = Field(exclude=True)    
+    pass  
