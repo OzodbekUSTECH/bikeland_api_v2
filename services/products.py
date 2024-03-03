@@ -8,6 +8,7 @@ from utils.filters.filter_products import FilterProductsParams
 from repositories import paginate, pagination_params
 from database import UnitOfWork
 from collections import Counter
+import os
 
 
 class ProductsService:
@@ -129,13 +130,23 @@ class ProductsService:
             await uow.commit()
             return product
         
-    async def delete_media(self, uow,id: int) -> models.ProductMediaGroup:
+    async def delete_media(self, uow, id: int) -> models.ProductMediaGroup:
         async with uow:
             product_media: models.ProductMediaGroup = await uow.product_media_groups.get_by_id(id)
+            
+            # Полный путь к файлу
+            file_path = os.path.join('media', 'products', product_media.filename)
+            
+            # Удаление файла из файловой системы
+            if os.path.exists(file_path):
+                os.remove(file_path)
+            
+            # Удаление записи из базы данных
             await uow.product_media_groups.delete(product_media.id)
             await uow.commit()
+            
             return product_media
-        
+            
     
 
     ################################
