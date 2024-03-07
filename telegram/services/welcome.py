@@ -32,9 +32,10 @@ class WelcomeService:
                 await self._say_welcome(uow, message)
 
     async def _is_dealer(self, message: Message, uow: UnitOfWork) -> None:
-        dealer: models.Dealer = await uow.dealers.get_one_by_phone_number(message.contact.phone_number)
-        if dealer:
-            dealer.telegram_id = message.from_user.id
+        async with uow:
+            dealer: models.Dealer = await uow.dealers.get_one_by_phone_number(message.contact.phone_number)
+            if dealer:
+                dealer.telegram_id = message.from_user.id
             
 
     async def register_tg_client(self, message: Message, state: FSMContext, uow: UnitOfWork) -> None:

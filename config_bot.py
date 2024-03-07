@@ -7,5 +7,5 @@ async def send_message_to_tg_admins(message_text: str):
         try:
             await bot.send_message(chat_id=admin_tg_id, text=message_text)
         except:
-            print(f"{admin_tg_id} - не зареган")
+            # print(f"{admin_tg_id} - не зареган")
             continue
