@@ -15,7 +15,7 @@ from fastapi_cache.backends.redis import RedisBackend
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 @asynccontextmanager
-async def lifespan():
+async def lifespan(app: FastAPI):
     redis = aioredis.from_url("redis://bikeland_redis")
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     """func on start up project"""
