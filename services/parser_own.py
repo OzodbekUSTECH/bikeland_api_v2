@@ -143,8 +143,10 @@ class ParserService:
         uow = UnitOfWork()
         async with uow:
             products = await uow.products.get_all_without_pagination()
+            all_products = await ParserHandler.get_all_1c_products()
             for product in products:
-                their_product = await ParserHandler.get_by_key(product.key)
+                # Найти продукт с заданным ключом
+                their_product = await ParserHandler.get_by_key(product.key, all_products)
                 if not their_product:
                     await uow.products.delete(product.id)
             

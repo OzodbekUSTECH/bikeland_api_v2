@@ -34,11 +34,15 @@
     
 # # #     # Добавляем задержку в 60 секунд, чтобы скрипт оставался активным.
     
+# from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 # # # # if __name__ == "__main__":
 # scheduler = AsyncIOScheduler()
-# scheduler.add_job(services.parser_service.check_products_from_1c, 'cron', hour=6, minute=1)
+# scheduler.add_job(services.parser_service.check_products_from_1c, 'cron', hour=16, minute=7)
 # scheduler.start()
+# import asyncio
+# asyncio.run(services.parser_service.auto_delete_product())
+# asyncio.run(services.parser_service.check_products_from_1c())
 
 
 
