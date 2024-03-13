@@ -30,7 +30,7 @@ async def create_media_group_for_product(
     return await products_service.create_media_group(uow, product_id, photos)
 
 @router.get('', response_model=list[ProductSchema])
-@cache(expire=1800)
+@cache(expire=600)
 async def get_products(
     uow: uow_dep,
     filter_params: Annotated[FilterProductsParams, Depends()],
