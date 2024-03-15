@@ -57,6 +57,13 @@ async def get_link_to_google_forms(
 ):
     return await forms_service.get_link_google_forms(uow)
 
+@router.get('/lgf', response_model=LinkGoogleForm)
+async def get_one_link_google_form(
+    uow: uow_dep
+):
+    instance = await forms_service.get_one_link_google_form(uow)
+    return instance[-1]
+
 @router.put('/link-google-forms/{id}', response_model=IdResponseSchema)
 async def update_link_to_google_form(
     uow: uow_dep,

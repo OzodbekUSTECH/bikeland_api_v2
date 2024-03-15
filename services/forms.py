@@ -129,6 +129,13 @@ class FormsService:
         async with uow:
             return await uow.link_google_forms.get_all()
         
+    async def get_one_link_google_form(
+            self,
+            uow: UnitOfWork
+    ) -> models.LinkGoogleForm:
+        async with uow:
+            return await uow.link_google_forms.get_all_by()
+        
     async def update_link_google_form(
             self,
             uow: UnitOfWork,
