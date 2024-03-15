@@ -15,7 +15,7 @@ from models.resource_catalog.social_media import SocialNetwork
 from models.resource_catalog.delivery import Delivery, DeliveryMedia
 
 
-from models.forms import BackCallWidget, BackCallForm, WorkWithUsForm
+from models.forms import BackCallWidget, BackCallForm, WorkWithUsForm, LinkGoogleForm
 
 
 from models.products import Product, ProductMediaGroup

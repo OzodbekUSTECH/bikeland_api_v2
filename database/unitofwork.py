@@ -29,6 +29,7 @@ class UnitOfWork:
     back_call_widgets: Type[repositories.BackCallWidgetsRepository]
     back_call_forms: Type[repositories.BackCallFormsRepository]
     work_with_us_forms: Type[repositories.WorkWithUsFormsRepository]
+    link_google_forms: Type[repositories.LinkGoogleFormsRepository]
 
     products: Type[repositories.ProductsRepository]
     product_media_groups: Type[repositories.ProductMediaGroupsRepository]
@@ -73,6 +74,7 @@ class UnitOfWork:
         self.back_call_widgets = repositories.BackCallWidgetsRepository(self.session, model=models.BackCallWidget)
         self.back_call_forms = repositories.BackCallFormsRepository(self.session, model=models.BackCallForm)
         self.work_with_us_forms = repositories.WorkWithUsFormsRepository(self.session, model=models.WorkWithUsForm)
+        self.link_google_forms = repositories.LinkGoogleFormsRepository(self.session, model=models.LinkGoogleForm)
 
         self.products = repositories.ProductsRepository(self.session, model=models.Product)
         self.product_media_groups = repositories.ProductMediaGroupsRepository(self.session, model=models.ProductMediaGroup)

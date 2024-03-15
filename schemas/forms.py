@@ -36,3 +36,16 @@ class UpdateWorkWithUsFormSchema(UpdateBaseModel, CreateWorkWithUsFormSchema):
 
 class WorkWithUsFormSchema(IdResponseSchema, UpdateWorkWithUsFormSchema):
     pass
+
+#-----------------------------------------------
+
+class CreateLinkGoogleForm(CreateBaseModel):
+    description: str
+    btn_name: str
+    btn_url: str
+
+class UpdateLinkGoogleForm(UpdateBaseModel, CreateLinkGoogleForm):
+    pass
+
+class LinkGoogleForm(IdResponseSchema, UpdateLinkGoogleForm):
+    pass

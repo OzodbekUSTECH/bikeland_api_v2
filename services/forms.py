@@ -3,9 +3,13 @@ from schemas.forms import (
     CreateBackCallFormSchema,
     CreateWorkWithUsFormSchema,
 
+    CreateLinkGoogleForm,
+    UpdateLinkGoogleForm
+
 )
 import models
 from config_bot import send_message_to_tg_admins
+from database import UnitOfWork
 
 class FormsService:
 
@@ -107,6 +111,44 @@ class FormsService:
             await self._inform_tg_admins(uow, wwu_form=wwu_form)
             return wwu_form
         
+    
+    async def create_link_google_form(
+            self,
+            uow: UnitOfWork,
+            lgf_data: CreateLinkGoogleForm
+    ) -> models.LinkGoogleForm:
+        async with uow:
+            link_google_form = await uow.link_google_forms.create(lgf_data.model_dump())
+            await uow.commit()
+            return link_google_form
+        
+    async def get_link_google_forms(
+            self,
+            uow: UnitOfWork
+    ) -> list[models.LinkGoogleForm]:
+        async with uow:
+            return await uow.link_google_forms.get_all()
+        
+    async def update_link_google_form(
+            self,
+            uow: UnitOfWork,
+            id: int,
+            lgf_data: UpdateLinkGoogleForm
+    ) -> models.LinkGoogleForm:
+        async with uow:
+            link_google_form: models.LinkGoogleForm = await uow.link_google_forms.update(id, lgf_data.model_dump())
+            await uow.commit()
+            return link_google_form
+        
+    async def delete_link_google_form(
+            self,
+            uow: UnitOfWork,
+            id: int
+    ) -> models.LinkGoogleForm:
+        link_google_form: models.LinkGoogleForm = await uow.link_google_forms.delete(id)
+        await uow.commit()
+        return link_google_form
+                
     async def get_bc_widgets(self,  uow,):
         async with uow:
             return await uow.back_call_widgets.get_all()

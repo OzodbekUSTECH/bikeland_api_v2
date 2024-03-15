@@ -28,3 +28,11 @@ class WorkWithUsForm(FormTable):
     __tablename__ = "work_with_us_forms"
 
     about: Mapped[str] = mapped_column(Text)
+
+
+class LinkGoogleForm(BaseTable):
+    __tablename__ = "link_google_form"
+
+    description: Mapped[str]
+    btn_name: Mapped[str]
+    btn_url: Mapped[str]

@@ -8,3 +8,6 @@ class BackCallFormsRepository(BaseRepository):
 
 class WorkWithUsFormsRepository(BaseRepository):
     ...
+
+class LinkGoogleFormsRepository(BaseRepository):
+    ...

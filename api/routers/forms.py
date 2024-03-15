@@ -8,7 +8,11 @@ from schemas.forms import (
 
     BackCallWidgetSchema,
     BackCallFormSchema,
-    WorkWithUsFormSchema
+    WorkWithUsFormSchema,
+
+    CreateLinkGoogleForm,
+    UpdateLinkGoogleForm,
+    LinkGoogleForm
 )
 from schemas import IdResponseSchema
 
@@ -37,6 +41,39 @@ async def create_work_with_us_form(
     uow: uow_dep,
 ):
     return await forms_service.create_wwu_form(uow, wwu_data)
+
+######################################LINK TO GOOGLE FORM INSTEAD OF WORK WITH US FORMS
+
+@router.post('/link-google-forms', response_model=IdResponseSchema)
+async def create_link_to_google_form(
+    uow: uow_dep,
+    lgf_data: CreateLinkGoogleForm,
+):
+    return await forms_service.create_link_google_form(uow, lgf_data)
+
+@router.get('/link-google-forms', response_model=Page[LinkGoogleForm])
+async def get_link_to_google_forms(
+    uow: uow_dep
+):
+    return await forms_service.get_link_google_forms(uow)
+
+@router.put('/link-google-forms/{id}', response_model=IdResponseSchema)
+async def update_link_to_google_form(
+    uow: uow_dep,
+    id: int,
+    lgf_data: UpdateLinkGoogleForm
+):
+    return await forms_service.update_link_google_form(uow, id, lgf_data)
+
+@router.delete('/link-google-forms/{id}', response_model=IdResponseSchema)
+async def delete_link_to_google_form(
+    uow: uow_dep,
+    id: int,
+):
+    return await forms_service.delete_link_google_form(uow, id)
+
+######################################LINK TO GOOGLE FORM INSTEAD OF WORK WITH US FORMS
+###########################################################################################
 
 @router.get('/bc-widgets', response_model=Page[BackCallWidgetSchema])
 async def get_back_call_widgets(uow: uow_dep,):

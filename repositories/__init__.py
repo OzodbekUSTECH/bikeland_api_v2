@@ -17,7 +17,7 @@ from repositories.resource_catalog.social_media import SocialMediaRepository
 from repositories.resource_catalog.delivery import DeliveryRepository, DeliveryMediaRepository
 
 #forms
-from repositories.forms import BackCallWidgetsRepository, BackCallFormsRepository, WorkWithUsFormsRepository
+from repositories.forms import BackCallWidgetsRepository, BackCallFormsRepository, WorkWithUsFormsRepository, LinkGoogleFormsRepository
 
 from repositories.products import ProductsRepository, ProductMediaGroupsRepository
 
