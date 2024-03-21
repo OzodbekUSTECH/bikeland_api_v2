@@ -2,78 +2,101 @@ from fastapi import Query
 from fuzzywuzzy import fuzz
 import models
 from utils.filters.base import BaseFilterParams
+from sqlalchemy import desc, asc
 
+from fastapi_filter.contrib.sqlalchemy import Filter
+from typing import Any, AsyncIterator, List, Optional
+
+
+class ProductFilters(Filter):
+    key: Optional[str] = None
+    category_id: Optional[int] = None
+    sub_category_id: Optional[int] = None
+    dealer_id: Optional[int] = None
+    title__ilike: Optional[str] = None
+    status_id: Optional[int] = None
+    brand_id: Optional[int] = None
+    # quantity__gte: Optional[int] = None
+    show_on_main_page: bool = False
+    show_on_see_also: bool = False
+
+
+    class Constants(Filter.Constants):
+        model = models.Product
+        search_model_fields = ["title"]
+
+    
 
 class FilterProductsParams(BaseFilterParams):
     def __init__(
             self,
-            key: str = Query(None),
-            category_id: int = Query(None),
-            sub_category_id: int = Query(None),
-            dealer_id: int = Query(None),
-            title: str = Query(None),
-            status_id: int = Query(None),
-            brand_id: int = Query(None),
+            # key: str = Query(None),
+            # category_id: int = Query(None),
+            # sub_category_id: int = Query(None),
+            # dealer_id: int = Query(None),
+            # title: str = Query(None),
+            # status_id: int = Query(None),
+            # brand_id: int = Query(None),
             in_stock: bool = Query(None),
 
             price_by_asc: bool = Query(None),
             by_popularity: bool = Query(None),
             by_new_products: bool = Query(None),  
 
-            show_on_main_page: bool = Query(None),
-            show_on_see_also: bool = Query(None),
+            # show_on_main_page: bool = Query(None),
+            # show_on_see_also: bool = Query(None),
 
-            with_pagination: bool = Query(False),
+            # with_pagination: bool = Query(False),
     ):
-        self.key = key
-        self.category_id = category_id
-        self.sub_category_id = sub_category_id
-        self.dealer_id = dealer_id
-        self.title = title
-        self.status_id = status_id
-        self.brand_id = brand_id
+        # self.key = key
+        # self.category_id = category_id
+        # self.sub_category_id = sub_category_id
+        # self.dealer_id = dealer_id
+        # self.title = title
+        # self.status_id = status_id
+        # self.brand_id = brand_id
         self.in_stock = in_stock
 
         self.price_by_asc = price_by_asc
         self.by_popularity = by_popularity
         self.by_new_products = by_new_products
 
-        self.show_on_main_page = show_on_main_page
-        self.show_on_see_also = show_on_see_also
+        # self.show_on_main_page = show_on_main_page
+        # self.show_on_see_also = show_on_see_also
 
-        self.with_pagination = with_pagination
+        # self.with_pagination = with_pagination
 
     def filter_item(self, product: models.Product):
         # Список условий фильтрации
         filters = []
 
-        if self.category_id is not None:
-            filters.append(self.category_id == product.category_id)
+        # if self.category_id is not None:
+        #     filters.append(self.category_id == product.category_id)
 
-        if self.sub_category_id is not None:
-            filters.append(self.sub_category_id == product.sub_category_id)
+        # if self.sub_category_id is not None:
+        #     filters.append(self.sub_category_id == product.sub_category_id)
         
-        if self.dealer_id is not None:
-            filters.append(self.dealer_id == product.dealer_id)
+        # if self.dealer_id is not None:
+        #     filters.append(self.dealer_id == product.dealer_id)
 
-        if self.title is not None:
-            filters.append(
-                fuzz.partial_ratio(
-                    self.title.lower(), product.title.lower()
-                ) >= 75
-            )
+        # if self.title is not None:
+        #     filters.append(
+        #         fuzz.partial_ratio(
+        #             self.title.lower(), product.title.lower()
+        #         ) >= 75
+        #     )
 
-        if self.status_id is not None:
-            filters.append(self.status_id == product.status_id)
+        # if self.status_id is not None:
+        #     filters.append(self.status_id == product.status_id)
 
-        if self.brand_id is not None:
-            filters.append(self.brand_id == product.brand_id)
+        # if self.brand_id is not None:
+        #     filters.append(self.brand_id == product.brand_id)
 
-        if self.show_on_main_page is not None:
-            filters.append(self.show_on_main_page == product.show_on_main_page)
+        # if self.show_on_main_page is not None:
+        #     filters.append(self.show_on_main_page == product.show_on_main_page)
 
-        if self.show_on_see_also is not None:
-            filters.append(self.show_on_see_also == product.show_on_see_also)
+        # if self.show_on_see_also is not None:
+        #     filters.append(self.show_on_see_also == product.show_on_see_also)
 
         if self.in_stock is not None:
             if self.in_stock:

@@ -4,7 +4,7 @@ from utils.parser import ParserHandler
 from utils.media_handler import MediaHandler
 from fastapi import UploadFile
 from config import settings
-from utils.filters.filter_products import FilterProductsParams
+from utils.filters.filter_products import FilterProductsParams, ProductFilters
 from repositories import paginate, pagination_params
 from database import UnitOfWork
 from collections import Counter
@@ -82,20 +82,21 @@ class ProductsService:
             self,
             uow: UnitOfWork,
             filter_params: FilterProductsParams,
-            pagination: pagination_params
+            prod_filter: ProductFilters,
         ) -> list[models.Product]:
         async with uow:
-            products = await uow.products.filter_products(params=filter_params)
-            # if filter_params.with_pagination:
-            #     return paginate(products, pagination)
-            # return products
-            # products: list[models.Product] = await uow.products.get_all_without_pagination()
-            # filtered_products: list[models.Product] = await filter_params.get_filtered_items(products)
-            # filtered_products = await filter_params.sort_products(filtered_products)
-
-            if filter_params.with_pagination:
-                return paginate(products, pagination)
+            products = await uow.products.filter_products(params=filter_params, prod_filter=prod_filter)
+            
             return products
+        
+    async def get_filtered_products(
+            self,
+            uow: UnitOfWork,
+            prod_filter: ProductFilters,
+        ) -> list[models.Product]:
+        async with uow:
+            return await uow.products.get_filtered_products(prod_filter=prod_filter)
+        
         
     async def get_product_by_id(self,uow, id: int) -> models.Product:
         async with uow:

@@ -80,7 +80,7 @@ class Product(BaseTable):
     photos: Mapped[list["ProductMediaGroup"]] = relationship(lazy="selectin",  order_by="desc(ProductMediaGroup.id)", cascade="all, delete-orphan")
     dealer: Mapped["Dealer"] = relationship(lazy="joined")
     status: Mapped["Status"] = relationship(lazy="joined")
-    category: Mapped["Category"] = relationship(lazy="joined")
+    category: Mapped["Category"] = relationship(lazy="selectin")
     sub_category: Mapped["SubCategory"] = relationship(lazy="joined")
     brand: Mapped["Brand"] = relationship(lazy="joined")
 
@@ -89,3 +89,6 @@ class Product(BaseTable):
 
     async def increase_view(self):
         self.amount_views += 1
+
+
+    

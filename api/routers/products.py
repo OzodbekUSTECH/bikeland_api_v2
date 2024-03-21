@@ -10,6 +10,8 @@ from repositories import pagination_params
 from utils.filters.filter_products import FilterProductsParams
 from typing import Annotated
 from fastapi_cache.decorator import cache
+from fastapi_filter import FilterDepends, with_prefix
+from utils.filters.filter_products import ProductFilters
 
 router = APIRouter(
     prefix="/products",
@@ -34,9 +36,20 @@ async def create_media_group_for_product(
 async def get_products(
     uow: uow_dep,
     filter_params: Annotated[FilterProductsParams, Depends()],
-    pagination: Annotated[pagination_params, Depends()]
+    prod_filter: ProductFilters = FilterDepends(ProductFilters)
 ):
-    return await products_service.get_products(uow, filter_params, pagination)
+    return await products_service.get_products(uow=uow, filter_params=filter_params, prod_filter=prod_filter)
+
+
+# @router.get('/test-filter', response_model=list[ProductSchema])
+# async def get_products(
+#     uow: uow_dep,
+#     # filter_params: Annotated[FilterProductsParams, Depends()],
+#     # pagination: Annotated[pagination_params, Depends()],
+#     prod_filter: ProductFilters = FilterDepends(ProductFilters)
+# ):
+#     return await products_service.get_filtered_products(uow, prod_filter)
+
 
 @router.get('/duplicates')
 async def get_duplicates(
