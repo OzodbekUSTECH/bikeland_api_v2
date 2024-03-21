@@ -14,6 +14,6 @@ class TgClient(BaseTable):
     username: Mapped[str | None]
     phone_number: Mapped[str]
 
-    orders: Mapped[list["OrderBasket"]] = relationship(lazy="subquery")
+    orders: Mapped[list["OrderBasket"]] = relationship(lazy="selectin")
 
     

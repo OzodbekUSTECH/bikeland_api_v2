@@ -27,7 +27,7 @@ class Order(BaseTable):
                 default_price += product.price_of_options
         return default_price
 
-    basket: Mapped[list["OrderBasket"]] = relationship(lazy="subquery", back_populates="order")
+    basket: Mapped[list["OrderBasket"]] = relationship(lazy="selectin", back_populates="order")
     # @hybrid_property
     # def product_title(self) -> str:
     #     return self.product.title
@@ -98,8 +98,8 @@ class OrderBasket(BaseTable):
             return self.product.category.name
                 
     
-    product: Mapped["Product"] = relationship(lazy="subquery")
-    order: Mapped["Order"] = relationship(lazy="subquery", back_populates="basket")
+    product: Mapped["Product"] = relationship(lazy="joined")
+    order: Mapped["Order"] = relationship(lazy="joined", back_populates="basket")
 
     tgclient_id: Mapped[int] = mapped_column(ForeignKey("tgclients.id"))
     

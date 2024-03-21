@@ -34,4 +34,4 @@ class WaitingList(BaseTable):
     def required_quantity(self) -> int:
         return self.product.min_quantity - self.product.quantity
     
-    product: Mapped["Product"] = relationship(lazy="subquery")
+    product: Mapped["Product"] = relationship(lazy="joined")

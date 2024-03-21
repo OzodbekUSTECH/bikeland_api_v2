@@ -21,4 +21,4 @@ class Blog(BaseTable):
     meta_description: Mapped[str | None]
     description: Mapped[str] = mapped_column(Text)
 
-    photos: Mapped[list["BlogMediaGroup"]] = relationship(cascade="all, delete-orphan", lazy="subquery", order_by=desc("id"))
+    photos: Mapped[list["BlogMediaGroup"]] = relationship(cascade="all, delete-orphan", lazy="selectin", order_by=desc("id"))

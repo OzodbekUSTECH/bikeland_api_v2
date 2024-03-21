@@ -22,4 +22,4 @@ class Dealer(BaseTable):
         else:
             return None
         
-    waiting_list: Mapped[list["WaitingList"]] = relationship(lazy="subquery")
+    waiting_list: Mapped[list["WaitingList"]] = relationship(lazy="selectin")

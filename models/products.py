@@ -77,15 +77,15 @@ class Product(BaseTable):
     
 
 
-    photos: Mapped[list["ProductMediaGroup"]] = relationship(lazy="subquery",  order_by="desc(ProductMediaGroup.id)", cascade="all, delete-orphan")
-    dealer: Mapped["Dealer"] = relationship(lazy="subquery")
-    status: Mapped["Status"] = relationship(lazy="subquery")
-    category: Mapped["Category"] = relationship(lazy="subquery")
-    sub_category: Mapped["SubCategory"] = relationship(lazy="subquery")
-    brand: Mapped["Brand"] = relationship(lazy="subquery")
+    photos: Mapped[list["ProductMediaGroup"]] = relationship(lazy="selectin",  order_by="desc(ProductMediaGroup.id)", cascade="all, delete-orphan")
+    dealer: Mapped["Dealer"] = relationship(lazy="joined")
+    status: Mapped["Status"] = relationship(lazy="joined")
+    category: Mapped["Category"] = relationship(lazy="joined")
+    sub_category: Mapped["SubCategory"] = relationship(lazy="joined")
+    brand: Mapped["Brand"] = relationship(lazy="joined")
 
-    options: Mapped[list["ProductOption"]] = relationship(lazy="subquery")
-    video_links: Mapped[list["ProductVideoLink"]] = relationship(lazy="subquery")
+    options: Mapped[list["ProductOption"]] = relationship(lazy="selectin")
+    video_links: Mapped[list["ProductVideoLink"]] = relationship(lazy="selectin")
 
     async def increase_view(self):
         self.amount_views += 1

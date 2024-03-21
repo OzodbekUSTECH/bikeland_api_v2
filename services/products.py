@@ -80,7 +80,7 @@ class ProductsService:
 
     async def get_products(
             self,
-            uow,
+            uow: UnitOfWork,
             filter_params: FilterProductsParams,
             pagination: pagination_params
         ) -> list[models.Product]:
