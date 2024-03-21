@@ -12,12 +12,14 @@ from contextlib import asynccontextmanager
 import services
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    redis = aioredis.from_url("redis://bikeland_redis")
-    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+    # redis = aioredis.from_url("redis://bikeland_redis")
+    # FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+    # FastAPICache.init(InMemoryBackend())
     """func on start up project"""
     
     scheduler = AsyncIOScheduler()

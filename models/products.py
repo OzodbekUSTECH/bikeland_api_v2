@@ -80,7 +80,7 @@ class Product(BaseTable):
     photos: Mapped[list["ProductMediaGroup"]] = relationship(lazy="selectin",  order_by="desc(ProductMediaGroup.id)", cascade="all, delete-orphan")
     dealer: Mapped["Dealer"] = relationship(lazy="joined")
     status: Mapped["Status"] = relationship(lazy="joined")
-    category: Mapped["Category"] = relationship(lazy="selectin")
+    category: Mapped["Category"] = relationship(lazy="joined")
     sub_category: Mapped["SubCategory"] = relationship(lazy="joined")
     brand: Mapped["Brand"] = relationship(lazy="joined")
 
