@@ -6,6 +6,7 @@ from config_bot import bot
 
 async def main():
     dp = Dispatcher()
+    await bot.delete_webhook()
     for router in all_routers:
         dp.include_router(router)
     await dp.start_polling(bot)
